@@ -1,5 +1,5 @@
 // a var for width and height
-var hidth = 50, playerLocation;
+var hidth = 80, playerLocation;
 class Game extends React.Component {
     constructor(props) {
         super(props);
@@ -116,8 +116,8 @@ class Game extends React.Component {
   };
 
   nextMove = () => {
-    var maxTurn = 700;
-    var maxLength = 7;
+    var maxTurn = 600;
+    var maxLength = 8;
     var oldArr = this.fullArray();
     var curRow = Math.floor(Math.random() * hidth);
     var curCol = Math.floor(Math.random() * hidth);
