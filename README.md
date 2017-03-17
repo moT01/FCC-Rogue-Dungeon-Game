@@ -1,6 +1,6 @@
 ## FCC-Rogue-Dungeon-Game
 ##### Rogue Dungeon Game Project for [freecodecamp.com](https://www.freecodecamp.com/challenges/build-a-roguelike-dungeon-crawler-game)
-##### Check it out [here](http://htmlpreview.github.io/?https://github.com/moT01/FCC-Local-Weather/blob/master/index.html)
+##### Check it out [here](https://mot01.github.io/FCC-Rogue-Dungeon-Game/)
 
 <br/>
 <br/>
