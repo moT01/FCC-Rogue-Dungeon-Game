@@ -44,7 +44,6 @@ class Game extends React.Component {
     controllerPress = (e) => { //this is where all the game controls and actions are
         var keyPressed = e.keyCode; //get what button was pushed
         var temp = playerLocation.split('x'), newSpot;
-        
         switch (keyPressed) {
             case 37: case 65: /*left arrow or 'a' pressed*/
                 if(temp[0] > 0) { //meaning x value of current spot is not at the edge of the board, so left won't able to be used if your at the edge
@@ -74,16 +73,34 @@ class Game extends React.Component {
                     this.movePlayer(newSpot);
                 }
                 break;
+            case 77: //m
+                document.getElementById('mapOverlay').style.visibility = 'visible';
+                document.getElementById('mapTable').style.visibility = 'visible';
+                document.getElementById('grid').style.zIndex = -1;
+                break;
             default:
                 break;
         } //end switch()
     }; //end controllerPress()
     
-    
+    controllerRelease = (e) => {
+        var keyPressed = e.keyCode; //get what button was pushed
+        switch (keyPressed) {
+            case 77: //m
+                document.getElementById('mapOverlay').style.visibility = 'hidden';
+                document.getElementById('mapTable').style.visibility = 'hidden';
+                document.getElementById('grid').style.zIndex = 1;
+                break;
+            default:
+                break;
+        } //end switch()
+    } //end controllerRelease()
+
     componentDidMount() {
         this.placePlayer();
         this.centerScreen();
         document.addEventListener('keydown', this.controllerPress.bind(this));
+        document.addEventListener('keyup', this.controllerRelease.bind(this));
     }; //end componentDidMount()
     
 ////////////////////////////////////////////////MAP MAKER///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -142,22 +159,32 @@ class Game extends React.Component {
   };
 //////////////////////////////////////////////////////////MAP MAKER////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  render() {  
+    render() {  
     console.log('render');
-    return (
-      <div>
-        <table className="grid" id="grid"> 
-          {this.state.grid.map((obj, row) =>                
-              <tr className="">
-                  {obj.map((obj2, col) =>
-                      <td className={obj2 ? 'wall' : 'open'} id={col+'x'+row} key={""+ row + col}>{ obj2 ? '⧇' : '' }</td>      
-                  )}
-              </tr>        
-          )}
-        </table>
-      </div>
-    ); //end return()
-  } //end render()
+        return (
+            <div>
+                <table className="grid" id="grid"> 
+                    {this.state.grid.map((obj, row) =>                
+                        <tr className="">
+                        {obj.map((obj2, col) =>
+                            <td className={obj2 ? 'wall' : 'open'} id={col+'x'+row} key={""+ row + col}>{ obj2 ? '⧇' : '' }</td>      
+                        )}
+                        </tr>        
+                    )}
+                </table>
+
+                <table id="mapTable"> 
+                    {this.state.grid.map((obj, row) =>                
+                        <tr className="">
+                        {obj.map((obj2, col) =>
+                            <td className={obj2 ? 'wall' : 'open'} id="map"></td>      
+                        )}
+                        </tr>        
+                    )}
+                </table>
+            </div>
+        ); //end return()
+    } //end render()
 } //end Game Component
 
 ReactDOM.render(<Game/>, document.getElementById('root'));
