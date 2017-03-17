@@ -23,13 +23,10 @@ class Game extends React.Component {
     }; //end placePlayer
     
     centerScreen = () => {
-        var temp = playerLocation.split('x'), //get numbers from coordinates
-            element = document.getElementsByTagName('td'), ///these next few lines get the width of the whole grid
-            style = window.getComputedStyle(element[0]),
-            width = style.getPropertyValue('width'), //width of single td (20px)
-            width = width.split('p'), // [20,x]
-            tdWidth = parseInt(width[0])+2, //there's a 1px invisible border making the width 2px bigger than defined
-            top = window.innerHeight/2 - (temp[1]*tdWidth),
+        var temp = playerLocation.split('x'),
+            tdWidth = document.getElementById('0x0').clientWidth,
+            tdHeight = document.getElementById('0x0').clientHeight,
+            top = window.innerHeight/2 - (temp[1]*tdHeight),
             left = window.innerWidth/2 - (temp[0]*tdWidth);
         document.getElementById('grid').style.top = top+'px';
         document.getElementById('grid').style.left = left+'px';
