@@ -1,17 +1,16 @@
 html {
-    font-family: monospace;
-    background: #000;
-    font-size: 40px; }
+    background: #000; }
 
 body {
     margin: 0; }
   
 #grid {
+    font-family: monospace;
+    font-size: 30px;
     position: fixed;
     top: 0;
     left: 0;
-    border-collapse: collapse; 
-    z-index: 1; }
+    border-collapse: collapse; } /*removing this might mess up controls a bit*/
 
 td {
     cursor: pointer;
@@ -21,25 +20,28 @@ td {
     max-height: 50px;
     min-width: 50px;
     min-height: 50px;  
-    text-align: center;  }
+    text-align: center;
+    background-color: #999;  }
 
 .wall {
     background-color: #333; }
 .open {
     background-color: #999; }
 
-#mapOverlay {
+#mapBackdrop {
     visibility: hidden;
     width: 100vw;
     height: 100vh;
-    background-color: #000; }
-
-#mapTable {
-    visibility: hidden;
-    border-collapse: collapse;
-    position: fixed; 
+    background-color: #000;
+    position: fixed;
     top: 0;
     left: 0; }
+
+#mapTable {
+    font-size: 4px;
+    visibility: hidden;
+    border-collapse: collapse;
+    margin: 50px auto; }
 
 #map {
     width: 5px; 
@@ -48,3 +50,32 @@ td {
     max-height: 5px;
     min-width: 5px;
     min-height: 5px; }
+
+.displayContainer {
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    justify-content: center;
+    width: 100vw;
+    height: 60px; 
+    position: fixed;
+    top: 0;
+    left: 0; }
+
+.display {
+    margin: 2.5px;
+    padding: 5px 5px 0 5px;
+    background-color: #999;
+    opacity: 0.8;
+    border: 2px solid black;
+    border-radius: 10px;
+    height: 20px; }
+
+.health {
+    color: green; }
+.point {
+    color: gold; }
+.sword {
+    color: white; }
