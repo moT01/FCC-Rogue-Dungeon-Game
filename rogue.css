@@ -13,7 +13,7 @@ body {
     border-collapse: collapse; } /*removing this might mess up controls a bit*/
 
 td {
-    cursor: pointer;
+    cursor: default;
     width: 50px; 
     height: 50px; 
     max-width: 50px; 
@@ -21,12 +21,16 @@ td {
     min-width: 50px;
     min-height: 50px;  
     text-align: center;
-    background-color: #999;  }
+    background-color: #666;  }
 
 .wall {
+    background-image: url('stoneWall4.jpg');
+    background-size: contain;
     background-color: #333; }
 .open {
-    background-color: #999; }
+    background-color: #666; 
+    background-image: url('floorTile4.png');
+    background-size: contain; }
 
 #mapBackdrop {
     visibility: hidden;
@@ -51,7 +55,7 @@ td {
     min-width: 5px;
     min-height: 5px; }
 
-.displayContainer {
+.hudContainer {
     display: -webkit-box;
     display: -moz-box;
     display: -ms-flexbox;
@@ -64,7 +68,8 @@ td {
     top: 0;
     left: 0; }
 
-.display {
+.hud {
+    cursor: pointer;
     margin: 2.5px;
     padding: 5px 5px 0 5px;
     background-color: #999;
@@ -73,9 +78,40 @@ td {
     border-radius: 10px;
     height: 20px; }
 
+/*CLASS NAMES OF TD*/
+.pawn { 
+    cursor: pointer;    
+    background-image: url('floorTile4.png');
+    background-size: contain;  }
+.knight { 
+    cursor: pointer; 
+    background-image: url('floorTile4.png');
+    background-size: contain; }
+.king {
+    cursor: pointer;
+    color: gold; 
+    background-image: url('floorTile4.png');
+    background-size: contain; }
 .health {
-    color: green; }
+    cursor: pointer;
+    color: crimson; 
+    background-image: url('floorTile4.png');
+    background-size: contain; }
 .point {
-    color: gold; }
+    cursor: pointer;
+    color: lime; 
+    background-image: url('floorTile4.png');
+    background-size: contain; }
 .sword {
-    color: white; }
+    cursor: pointer;
+    color: white; 
+    background-image: url('floorTile4.png');
+    background-size: contain; }
+.player {
+    background-image: url('floorTile4.png');
+    background-size: contain; }
+
+img {
+    max-width: 40px;
+    max-height: 40px;
+}

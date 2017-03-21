@@ -4,13 +4,13 @@ var object = {
         icon: '☺',
         level: 1,
         xp: 0,
-        score: 0,
         weapon: 'fist',
         health: 100,
         offense: 5
     }, 
     pawn: {
         class: 'pawn',
+        level: 1,
         icon: '♣',
         health: 50,
         offense: 5,
@@ -18,37 +18,39 @@ var object = {
     }, 
     knight: {
         class: 'knight',
+        level: 3,
         icon: '♠',
         health:150,
         offense: 15,
-        xpreward: 25
+        xpReward: 25
     }, 
     king: {
         class: 'king',
+        level: 5,
         icon: '♛',
         health: 400,
         offense: 25,
-        xpreward: 50
+        xpReward: 50
     },
     health: {
         class: 'health',
         icon: '✜',
-        amount: 50
+        healthReward: 50
     }, 
     point: {
         class: 'point',
-        icon: '$',
-        xpreward: 1
+        icon: 'sword.png',
+        xpReward: 1
     },
     sword: {
         class: 'sword',
-        icon: '†',
+        icon: 'sword.png',
         damageMultiplier: 2        
     }
 };
 
 // a var for width and height
-var hidth = 50, playerLocation, totalMapCells = 0, objectsArray = [];
+var hidth = 50, playerLocation, populatedObject = [], tempPlayer;
 class Game extends React.Component {
     constructor(props) {
         super(props);
@@ -56,7 +58,7 @@ class Game extends React.Component {
             object: [],
             player: object.player,
             grid: this.nextMove()
-        }; //end this.state 
+        }; //end this.state
     }; //end constructor()
        
     //in here somewhere remove class open, add class of thing (.player - .enemy1 - .enemy2 - health )
@@ -71,8 +73,8 @@ class Game extends React.Component {
                 if(document.getElementById(coordinates).classList.contains('open')) {//checks if the element has class 'open'
                     isOpen = true;
                     document.getElementById(coordinates).className = objectsArray[i].class;
-                    document.getElementById(coordinates).innerHTML = objectsArray[i].icon;
-                    document.getElementById(coordinates).value = objectsArray[i].index;
+                    document.getElementById(coordinates).innerHTML = "<img src="+objectsArray[i].icon+" />";//objectsArray[i].icon;
+                    document.getElementById(coordinates).setAttribute('index', objectsArray[i].index);
                     if(i === objectsArray.length-1) { //this tests if we are at last of array, which is the player(last item to place)
                         playerLocation = coordinates;
                     } //end if
@@ -82,29 +84,42 @@ class Game extends React.Component {
     }; //end placeObjects
     
     createObjectsToPlace = () => {
-        var index = 0; //index is for identifying the object to change values later via attacks and picking up items etc.
+        var i=0, index = 0, objectsArray = [], tempObj = {}; //index is for identifying the object to change values later via attacks and picking up items etc.
         var numberOfObjects = [
             ['pawn', 10],
             ['knight', 4],
             ['king', 1],
-            ['health', 25],
-            ['point', 50],
+            ['health', 20],
+            ['point', 20],
             ['sword', 1],
             ['player', 1]
         ];
     
         for (var i=0; i<numberOfObjects.length; i++) {
             for(var j=0; j<numberOfObjects[i][1]; j++) {
-                var tempObj = object[numberOfObjects[i][0]];
+                tempObj = JSON.parse(JSON.stringify(object[numberOfObjects[i][0]]));
                 tempObj.index = index;
-                objectsArray.push(tempObj);    
+                objectsArray.push(tempObj);
                 index++;
             } //end j
         } //end i
-        //this.setState({ 
-          //  object: objectsArray 
-        //}); //end setState 
+        populatedObject = objectsArray; //global variable that holds all the objects on the map
+        this.placeObjects(objectsArray);
+        this.setState({
+            object: objectsArray,
+            player: objectsArray[objectsArray.length-1] //MAY NEED TO COME BACK AND PARSE/STRINGIFY OBJECT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        }); //end setState 
     }; //end createObjectsToPlace()
+
+    hudChange = (e) => {
+        var id = document.querySelector('#'+e.target.id);
+        //id.style.removeProperty('transition');
+        id.style.backgroundColor = 'Lime';
+        //id.style.Transition = "all 500ms ease-out 500ms";
+        //id.style.backgroundColor = '#999';
+        //add transition
+        //change color to gray
+    };
     
     centerScreen = () => {
         var temp = playerLocation.split('x'),
@@ -116,17 +131,38 @@ class Game extends React.Component {
         document.getElementById('grid').style.left = left+'px';
     }; //end centerScreen()
     
-    movePlayer = (newSpot) => {
-        if(document.getElementById(newSpot).classList.contains('open')) { //maybe add if contains item here as well (health) (coins) also will need to remove name or whatever you come up with
-            document.getElementById(playerLocation).innerHTML = "";
-            document.getElementById(newSpot).innerHTML = "☺";
-            playerLocation = newSpot;
-        } //end if else 
+    movePlayer = (nextSpot) => { //nextSpot comes from controllerPress()
+        var oldSpot = document.getElementById(playerLocation),
+            newSpot = document.getElementById(nextSpot),
+            classes = newSpot.classList;
+    
+        function removeSpotAttributes (spot) {
+            spot.removeAttribute('index');
+            spot.className = 'open';
+        };
+        
+        if(classes.contains('open') || classes.contains('health') || classes.contains('point')) { //||(health)||(coins) //also remove index
+            if (classes.contains('point')) {
+                var index = newSpot.getAttribute('index'),
+                tempObj = populatedObject[index];
+                tempPlayer.xp += tempObj.xpReward;
+            } if (classes.contains('health')) {
+                var index = newSpot.getAttribute('index'),
+                tempObj = populatedObject[index];
+                tempPlayer.health += tempObj.healthReward;    
+            }
+            removeSpotAttributes(oldSpot);  //\\  these all needed for ('open')
+            removeSpotAttributes(newSpot); //\\ all needed for collectibles
+            oldSpot.innerHTML = "";               //\\ 
+            newSpot.innerHTML = "☺";        //\\
+            playerLocation = nextSpot;        //\\ 
+        } //end if else                                                                                 //else if (pawn||knight||king) create temp enemy Object
         this.centerScreen();
     }; //end movePlayer()
 
 ////////////////////////////////////////////////CONTROLS///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    controllerPress = (e) => { //this is where all the game controls and actions are
+    controllerPress = (e) => { //this is where all the game controls are
+        tempPlayer = this.state.player;
         var keyPressed = e.keyCode; //get what button was pushed
         var temp = playerLocation.split('x'), newSpot;
         switch (keyPressed) {
@@ -170,6 +206,11 @@ class Game extends React.Component {
     controllerRelease = (e) => {
         var keyPressed = e.keyCode; //get what button was pushed
         switch (keyPressed) {
+            //case 40: case 83: case 39: case 68: case 38: case 87: case 37: case 65: //and arrows or directional letters
+              //  this.setState({
+                //    player: tempPlayer
+                //});
+            //    break;
             case 77: //m
                 document.getElementById('mapBackdrop').style.visibility = 'hidden';
                 document.getElementById('mapTable').style.visibility = 'hidden';
@@ -179,20 +220,9 @@ class Game extends React.Component {
         } //end switch()
     }; //end controllerRelease()
 ////////////////////////////////////////////////END CONTROLS///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    displayChange = (e) => {
-        var id = document.querySelector('#'+e.target.id);
-        //id.style.removeProperty('transition');
-        id.style.backgroundColor = 'Lime';
-        //id.style.Transition = "all 500ms ease-out 500ms";
-        //id.style.backgroundColor = '#999';
-        //add transition
-        //change color to gray
-    };
     
     componentDidMount() {
         this.createObjectsToPlace();
-        this.placeObjects(objectsArray);
         this.centerScreen();
         document.addEventListener('keydown', this.controllerPress.bind(this));
         document.addEventListener('keyup', this.controllerRelease.bind(this));
@@ -256,7 +286,7 @@ class Game extends React.Component {
                     {this.state.grid.map((obj, row) =>                
                         <tr className="">
                         {obj.map((obj2, col) => 
-                            <td className={obj2 ? 'wall' : 'open'} id={col+'x'+row} key={""+ row + col}>{ obj2 ? '⧇' : '' }</td>      
+                            <td className={obj2 ? 'wall' : 'open'} id={col+'x'+row} key={""+ row + col}>{/* obj2 ? '⧇' : '' */}</td>      
                         )}
                         </tr>        
                     )}
@@ -274,13 +304,13 @@ class Game extends React.Component {
                     </table>
                 </div>
 
-                <div className="displayContainer">
-                    <div className="display">'M': Menu</div>
-                    <div className="display" onClick={this.displayChange.bind(this)} id="level">Level: {this.state.player.level}</div>
-                    <div className="display" onClick={this.displayChange.bind(this)} id="xp">XP: {this.state.player.xp}</div>
-                    <div className="display" onClick={this.displayChange.bind(this)} id="score">Score: {this.state.player.score}</div>
-                    <div className="display" onClick={this.displayChange.bind(this)} id="health">Health: {this.state.player.health}</div>
-                    <div className="display" onClick={this.displayChange.bind(this)} id="weapon">Weapon: {this.state.player.weapon}</div>
+                <div className="hudContainer">
+                    <div className="hud">'M': Menu</div>
+                    <div className="hud" onClick={this.hudChange.bind(this)} id="level">Level: {this.state.player.level}</div>
+                    <div className="hud" onClick={this.hudChange.bind(this)} id="xp">XP: {this.state.player.xp}</div>
+                    <div className="hud" onClick={this.hudChange.bind(this)} id="health">Health: {this.state.player.health}</div>
+                    <div className="hud" onClick={this.hudChange.bind(this)} id="damage">Damage: {this.state.player.damage}</div>
+                    <div className="hud" onClick={this.hudChange.bind(this)} id="weapon">Weapon: {this.state.player.weapon}</div>
                 </div>
             </div>
         ); //end return()
