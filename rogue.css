@@ -5,8 +5,6 @@ body {
     margin: 0; }
   
 #grid {
-    font-family: monospace;
-    font-size: 30px;
     position: fixed;
     top: 0;
     left: 0;
@@ -24,34 +22,36 @@ td {
 
 .wall0 {
     background-image: url('wall0.png');
-    background-size: 60px 60px, contain; }
+    /*background-repeat: no-repeat;
+    background-position: center; */
+    background-size: 62px 62px; }
 .wall1 {
     background-image: url('wall1.png');
-    background-size: cover; }
+    background-size: 62px 62px; }
 .wall2 {
     background-image: url('wall2.png');
-    background-size: cover; }
+    background-size: 62px 62px; }
 .wall3 {
     background-image: url('wall3.png');
-    background-size: cover; }
+    background-size: 62px 62px; }
 .wall4 {
     background-image: url('wall4.png');
-    background-size: cover; }
+    background-size: 62px 62px; }
 .wall5 {
     background-image: url('wall5.png');
-    background-size: cover; }
+    background-size: 62px 62px; }
 .wall6 {
     background-image: url('wall6.png');
-    background-size: cover; }
+    background-size: 62px 62px; }
 .wall7 {
     background-image: url('wall7.png');
-    background-size: cover; }
+    background-size: 62px 62px; }
 .wall8 {
     background-image: url('wall8.png');
-    background-size: cover; }
+    background-size: 62px 62px; }
 .wall9 {
     background-image: url('wall9.png');
-    background-size: cover; }
+    background-size: 62px 62px; }
 .open {
     background-image: url('floorTile4.png');
     background-size: cover; }

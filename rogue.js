@@ -297,7 +297,7 @@ class Game extends React.Component {
                         {this.state.grid.map((obj, row) =>                
                             <tr className="">
                             {obj.map((obj2, col) =>
-                                <td className={obj2 ? 'wall' : 'open'} id="map"></td>      
+                                <td className={obj2 ? 'wall'+Math.floor(Math.random()*10)+''  : 'open'} id="map"></td>      
                             )}
                             </tr>        
                         )}
