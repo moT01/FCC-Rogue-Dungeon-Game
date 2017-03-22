@@ -1,7 +1,7 @@
 var object = {
     player: { 
         class: 'player',
-        icon: '☺',
+        icon: 'playerForward.png',
         level: 1,
         xp: 0,
         weapon: 'fist',
@@ -131,7 +131,7 @@ class Game extends React.Component {
         document.getElementById('grid').style.left = left+'px';
     }; //end centerScreen()
     
-    movePlayer = (nextSpot) => { //nextSpot comes from controllerPress()
+    movePlayer = (nextSpot, directionFacing) => { //nextSpot comes from controllerPress()
         var oldSpot = document.getElementById(playerLocation),
             newSpot = document.getElementById(nextSpot),
             classes = newSpot.classList;
@@ -154,7 +154,7 @@ class Game extends React.Component {
             removeSpotAttributes(oldSpot);  //\\  these all needed for ('open')
             removeSpotAttributes(newSpot); //\\ all needed for collectibles
             oldSpot.innerHTML = "";               //\\ 
-            newSpot.innerHTML = "☺";        //\\
+            newSpot.innerHTML = '<img src="player'+directionFacing+'.png" />';        //\\
             playerLocation = nextSpot;        //\\ 
         } //end if else                                                                                 //else if (pawn||knight||king) create temp enemy Object
         this.centerScreen();
@@ -170,28 +170,28 @@ class Game extends React.Component {
                 if(temp[0] > 0) { //meaning x value of current spot is not at the edge of the board, so left won't able to be used if your at the edge
                     temp[0]--;
                     newSpot = temp.join('x');
-                    this.movePlayer(newSpot);
+                    this.movePlayer(newSpot, 'Left');
                 }
                 break;
             case 38: case 87: /*up arrow or 'w' pressed*/
                 if(temp[1] > 0) { //meaning x value of current spot is not at the edge of the board, so left won't able to be used if your at the edge
                     temp[1]--;
                     newSpot = temp.join('x');
-                    this.movePlayer(newSpot);
+                    this.movePlayer(newSpot, 'Backward');
                 }
                 break;
             case 39: case 68: /*right arrow or 'd' pressed*/
                 if(temp[0] < hidth-1) { //meaning x value of current spot is not at the edge of the board, so left won't able to be used if your at the edge
                     temp[0]++;
                     newSpot = temp.join('x');
-                    this.movePlayer(newSpot);
+                    this.movePlayer(newSpot, 'Right');
                 }
                 break;
             case 40: case 83: /*down arrow or 's' pressed*/
                 if(temp[1] < hidth-1) { //meaning x value of current spot is not at the edge of the board, so left won't able to be used if your at the edge
                     temp[1]++;
                     newSpot = temp.join('x');
-                    this.movePlayer(newSpot);
+                    this.movePlayer(newSpot, 'Forward');
                 }
                 break;
             case 77: //m
@@ -286,7 +286,7 @@ class Game extends React.Component {
                     {this.state.grid.map((obj, row) =>                
                         <tr className="">
                         {obj.map((obj2, col) => 
-                            <td className={obj2 ? 'wall' : 'open'} id={col+'x'+row} key={""+ row + col}>{/* obj2 ? '⧇' : '' */}</td>      
+                            <td className={obj2 ? 'wall'+Math.floor(Math.random()*10)+'' : 'open'} id={col+'x'+row} key={""+ row + col}></td>      
                         )}
                         </tr>        
                     )}
@@ -297,7 +297,7 @@ class Game extends React.Component {
                         {this.state.grid.map((obj, row) =>                
                             <tr className="">
                             {obj.map((obj2, col) =>
-                                <td className={obj2 ? 'wall' : 'open'} id="map">{ obj2 ? '⧇' : '' }</td>      
+                                <td className={obj2 ? 'wall' : 'open'} id="map"></td>      
                             )}
                             </tr>        
                         )}
