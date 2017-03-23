@@ -20,42 +20,61 @@ td {
     min-height: 60px;  
     text-align: center;  }
 
-.wall0 {
-    background-image: url('wall0.png');
-    /*background-repeat: no-repeat;
-    background-position: center; */
+/*wall tiles - class tied to td*/
+.wall0 { background-image: url('wall0.png');
     background-size: 62px 62px; }
-.wall1 {
-    background-image: url('wall1.png');
+.wall1 { background-image: url('wall1.png');
     background-size: 62px 62px; }
-.wall2 {
-    background-image: url('wall2.png');
+.wall2 { background-image: url('wall2.png');
     background-size: 62px 62px; }
-.wall3 {
-    background-image: url('wall3.png');
+.wall3 { background-image: url('wall3.png');
     background-size: 62px 62px; }
-.wall4 {
-    background-image: url('wall4.png');
+.wall4 { background-image: url('wall4.png');
     background-size: 62px 62px; }
-.wall5 {
-    background-image: url('wall5.png');
+.wall5 { background-image: url('wall5.png');
     background-size: 62px 62px; }
-.wall6 {
-    background-image: url('wall6.png');
+.wall6 { background-image: url('wall6.png');
     background-size: 62px 62px; }
-.wall7 {
-    background-image: url('wall7.png');
+.wall7 { background-image: url('wall7.png');
     background-size: 62px 62px; }
-.wall8 {
-    background-image: url('wall8.png');
+.wall8 { background-image: url('wall8.png');
     background-size: 62px 62px; }
-.wall9 {
-    background-image: url('wall9.png');
+.wall9 { background-image: url('wall9.png');
     background-size: 62px 62px; }
-.open {
-    background-image: url('floorTile4.png');
+.open { background-image: url('floorTile4.png');
     background-size: cover; }
 
+/*add the floor tiles for td's with objects in them
+cause the 'open' class gets removed in the js when
+one of these classes gets added- see if fixable*/
+.pawn { background-image: url('floorTile4.png');
+    background-size: contain;  }
+.knight {  background-image: url('floorTile4.png');
+    background-size: contain; }
+.king { background-image: url('floorTile4.png');
+    background-size: contain; }
+.health { background-image: url('floorTile4.png');
+    background-size: contain; }
+.point { background-image: url('floorTile4.png');
+    background-size: contain; }
+.hammer { background-image: url('floorTile4.png');
+    background-size: contain; }
+.axe { background-image: url('floorTile4.png');
+    background-size: contain; }
+.sword { background-image: url('floorTile4.png');
+    background-size: contain; }
+.shield { background-image: url('floorTile4.png');
+    background-size: contain; }
+.player { background-image: url('floorTile4.png');
+    background-size: contain; }
+
+/*img's of objects inside the td's - if you go too big the td's
+get distorted and mess up the map*/
+ img {
+    max-width: 54px;
+    max-height: 54px; }
+
+/*mini-map*/
 #mapBackdrop {
     visibility: hidden;
     width: 100vw;
@@ -78,7 +97,9 @@ td {
     max-height: 5px;
     min-width: 5px;
     min-height: 5px; }
+/*end mini-map*/
 
+/*stats display*/
 .hudContainer {
     display: -webkit-box;
     display: -moz-box;
@@ -101,40 +122,4 @@ td {
     border: 2px solid black;
     border-radius: 10px;
     height: 20px; }
-
-/*CLASS NAMES OF TD*/
-.pawn { 
-    cursor: pointer;    
-    background-image: url('floorTile4.png');
-    background-size: contain;  }
-.knight { 
-    cursor: pointer; 
-    background-image: url('floorTile4.png');
-    background-size: contain; }
-.king {
-    cursor: pointer;
-    color: gold; 
-    background-image: url('floorTile4.png');
-    background-size: contain; }
-.health {
-    cursor: pointer;
-    color: crimson; 
-    background-image: url('floorTile4.png');
-    background-size: contain; }
-.point {
-    cursor: pointer;
-    color: lime; 
-    background-image: url('floorTile4.png');
-    background-size: contain; }
-.sword {
-    cursor: pointer;
-    background-image: url('floorTile4.png');
-    background-size: contain; }
-.player {
-    background-image: url('floorTile4.png');
-    background-size: contain; }
-
-img {
-    max-width: 40px;
-    max-height: 40px;
-}
+/*end stats display*/

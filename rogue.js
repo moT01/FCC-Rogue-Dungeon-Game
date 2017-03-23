@@ -1,3 +1,9 @@
+//To change the rules of the map creation 
+//==the hidth variable holds the width and height (dimensions) of the map - global variable
+//==the maxTurn variable contols how many corners (or turns) the map can have - located in nextMove()
+//==the maxLength variable controls how potentially long before another turn - located in nextMove()
+
+
 var object = {
     player: { 
         class: 'player',
@@ -5,52 +11,83 @@ var object = {
         level: 1,
         xp: 0,
         weapon: 'fist',
-        health: 100,
-        offense: 5
+        armor: 'none',
+        health: 50,
+        offense: 5,
+        defense: 5,
+        offenseMultiplier: 1,
+        defenseMultiplier: 1
     }, 
     pawn: {
         class: 'pawn',
         level: 1,
-        icon: '♣',
+        levelNeeded: 1,
+        icon: 'pawn.png',
         health: 50,
-        offense: 5,
-        xpreward: 10
+        offense: 10,
+        defense: 10,
+        xpRewarrd: 5,
+        healthReward: 15
     }, 
     knight: {
         class: 'knight',
-        level: 3,
-        icon: '♠',
-        health:150,
+        level: 2,
+        levelNeeded: 2,
+        icon: 'knight.png',
+        health:100,
         offense: 15,
-        xpReward: 25
+        defense: 15,
+        xpReward: 10,
+        healthReward: 25
     }, 
     king: {
         class: 'king',
-        level: 5,
-        icon: '♛',
-        health: 400,
+        level: 3,
+        levelNeeded: 3,
+        icon: 'king.png',
+        health: 200,
         offense: 25,
+        defense: 20,
         xpReward: 50
     },
     health: {
         class: 'health',
-        icon: '✜',
-        healthReward: 50
+        icon: 'health.png',
+        healthReward: 10
     }, 
     point: {
         class: 'point',
-        icon: 'sword.png',
+        icon: 'point.png',
         xpReward: 1
+    },
+    hammer: {
+        class: 'hammer',
+        icon: 'hammer.png',
+        offenseMultiplier: 1.5,
+        levelNeeded: 1
+    },
+    axe: {
+        class: 'axe',
+        icon: 'axe.png',
+        offenseMultiplier: 2,
+        levelNeeded: 2
     },
     sword: {
         class: 'sword',
         icon: 'sword.png',
-        damageMultiplier: 2        
+        offenseMultiplier: 2.5,
+        levelNeeded: 3
+    },
+    shield: {
+        class: 'shield',
+        icon: 'shield.png',
+        defenseMultiplier: 1.5,
+        levelNeeded: 2
     }
 };
 
 // a var for width and height
-var hidth = 50, playerLocation, populatedObject = [], tempPlayer;
+var hidth = 40, playerLocation, populatedObject = [];//, tempPlayer;
 class Game extends React.Component {
     constructor(props) {
         super(props);
@@ -72,9 +109,9 @@ class Game extends React.Component {
                 coordinates = randomCol+'x'+randomRow;
                 if(document.getElementById(coordinates).classList.contains('open')) {//checks if the element has class 'open'
                     isOpen = true;
-                    document.getElementById(coordinates).className = objectsArray[i].class;
-                    document.getElementById(coordinates).innerHTML = "<img src="+objectsArray[i].icon+" />";//objectsArray[i].icon;
-                    document.getElementById(coordinates).setAttribute('index', objectsArray[i].index);
+                    document.getElementById(coordinates).className = objectsArray[i].class; //giving it a class is for collision detection
+                    document.getElementById(coordinates).innerHTML = "<img src="+objectsArray[i].icon+" />"; 
+                    document.getElementById(coordinates).setAttribute('index', objectsArray[i].index); //setting an index is to access the values of the object in populatedObject
                     if(i === objectsArray.length-1) { //this tests if we are at last of array, which is the player(last item to place)
                         playerLocation = coordinates;
                     } //end if
@@ -84,14 +121,17 @@ class Game extends React.Component {
     }; //end placeObjects
     
     createObjectsToPlace = () => {
-        var i=0, index = 0, objectsArray = [], tempObj = {}; //index is for identifying the object to change values later via attacks and picking up items etc.
+        var i=0, index = 0, objectsArray = [], tempObj = {};
         var numberOfObjects = [
             ['pawn', 10],
             ['knight', 4],
             ['king', 1],
-            ['health', 20],
+            ['health', 25],
             ['point', 20],
+            ['hammer', 1],
+            ['axe', 1],
             ['sword', 1],
+            ['shield', 1],
             ['player', 1]
         ];
     
@@ -111,14 +151,16 @@ class Game extends React.Component {
         }); //end setState 
     }; //end createObjectsToPlace()
 
-    hudChange = (e) => {
-        var id = document.querySelector('#'+e.target.id);
-        //id.style.removeProperty('transition');
-        id.style.backgroundColor = 'Lime';
-        //id.style.Transition = "all 500ms ease-out 500ms";
-        //id.style.backgroundColor = '#999';
-        //add transition
-        //change color to gray
+    updateLevel = () => {
+        object.player.level = 1 + (Math.floor(object.player.xp/25));
+    };
+
+    updateHUD = () => {
+        document.getElementById('level').innerHTML = "Level: " + object.player.level;
+        document.getElementById('xp').innerHTML = "XP: " + object.player.xp;
+        document.getElementById('health').innerHTML = "Health: " + object.player.health;
+        document.getElementById('weapon').innerHTML = "Weapon: " + object.player.weapon;
+        document.getElementById('armor').innerHTML = "Armor: " + object.player.armor;
     };
     
     centerScreen = () => {
@@ -134,35 +176,74 @@ class Game extends React.Component {
     movePlayer = (nextSpot, directionFacing) => { //nextSpot comes from controllerPress()
         var oldSpot = document.getElementById(playerLocation),
             newSpot = document.getElementById(nextSpot),
-            classes = newSpot.classList;
-    
+            classes = newSpot.classList,
+            index = newSpot.getAttribute('index'),
+            tempObj = populatedObject[index],
+            changeSettings = true;
+        
         function removeSpotAttributes (spot) {
             spot.removeAttribute('index');
             spot.className = 'open';
-        };
+        }; //end removeSpotAttributes()
+
+            //this whole area is for when you run into collectable items
+            if(classes.contains('open') || classes.contains('health') || classes.contains('point') || classes.contains('hammer') || classes.contains('axe') || classes.contains('sword') || classes.contains('shield')) {
+                if (classes.contains('point')) {
+                    object.player.xp += tempObj.xpReward;
+                } if (classes.contains('health')) {
+                    object.player.health += tempObj.healthReward;    
+                } if (classes.contains('hammer') || classes.contains('axe') || classes.contains('sword')) {
+                    if (object.player.level < tempObj.levelNeeded) { //player doesn't have level required
+                        alert('level ' + tempObj.levelNeeded + ' required for the ' + tempObj.class);
+                        changeSettings = false;
+                    } else { //player has level required
+                        console.log(tempObj);
+                        if (object.player.offenseMultiplier < tempObj.offenseMultiplier) {
+                        object.player.offenseMultiplier = tempObj.offenseMultiplier;
+                        object.player.weapon = tempObj.class;
+                        } //end if
+                        alert(tempObj.class + ' found!');
+                    } //end if/else
+                    console.log('asdfasdf');
+                } if (classes.contains('shield')) {
+                    object.player.defenseMultiplier = tempObj.defenseMultiplier;
+                    object.player.armor = 'shield';
+                    alert('shield found!');
+                } //end item
+                if(changeSettings) {
+                    //the next few lines move the player, and change the necessary icons/attributes
+                    removeSpotAttributes(oldSpot); 
+                    removeSpotAttributes(newSpot);
+                    oldSpot.innerHTML = "";            
+                    newSpot.innerHTML = '<img src="player'+directionFacing+'.png" />';   
+                    playerLocation = nextSpot;
+                } //end if
+            } else if (classes.contains('pawn') || classes.contains('knight') || classes.contains('king')) { //when you run into an enemy
+                changeSettings = false;
+                console.log('enemy');
+                if (object.player.level < tempObj.levelNeeded) {
+                    alert('you need to be level ' + tempObj.levelNeeded + ' to fight the ' + tempObj.class);
+                } //end if (level not enough)
+                if(changeSettings) {
+                    //the next few lines move the player, and change the necessary icons/attributes
+                    removeSpotAttributes(oldSpot); 
+                    removeSpotAttributes(newSpot);
+                    oldSpot.innerHTML = "";            
+                    newSpot.innerHTML = '<img src="player'+directionFacing+'.png" />';   
+                    playerLocation = nextSpot;
+                } //end if
+            } //end if (enemy)
+
         
-        if(classes.contains('open') || classes.contains('health') || classes.contains('point')) { //||(health)||(coins) //also remove index
-            if (classes.contains('point')) {
-                var index = newSpot.getAttribute('index'),
-                tempObj = populatedObject[index];
-                tempPlayer.xp += tempObj.xpReward;
-            } if (classes.contains('health')) {
-                var index = newSpot.getAttribute('index'),
-                tempObj = populatedObject[index];
-                tempPlayer.health += tempObj.healthReward;    
-            }
-            removeSpotAttributes(oldSpot);  //\\  these all needed for ('open')
-            removeSpotAttributes(newSpot); //\\ all needed for collectibles
-            oldSpot.innerHTML = "";               //\\ 
-            newSpot.innerHTML = '<img src="player'+directionFacing+'.png" />';        //\\
-            playerLocation = nextSpot;        //\\ 
-        } //end if else                                                                                 //else if (pawn||knight||king) create temp enemy Object
+        console.log(object.player);
+        this.updateLevel();
+        this.updateHUD();
         this.centerScreen();
     }; //end movePlayer()
 
 ////////////////////////////////////////////////CONTROLS///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     controllerPress = (e) => { //this is where all the game controls are
-        tempPlayer = this.state.player;
+        //var tempPlayer = object.player;
         var keyPressed = e.keyCode; //get what button was pushed
         var temp = playerLocation.split('x'), newSpot;
         switch (keyPressed) {
@@ -241,8 +322,8 @@ class Game extends React.Component {
     }; //end fullArray
 
     nextMove = () => {
-        var maxTurn = 800;
-        var maxLength = 6;
+        var maxTurn = 1200;
+        var maxLength = 8;
         var oldArr = this.fullArray();
         var curRow = Math.floor(Math.random() * hidth);
         var curCol = Math.floor(Math.random() * hidth);
@@ -305,12 +386,12 @@ class Game extends React.Component {
                 </div>
 
                 <div className="hudContainer">
-                    <div className="hud">'M': Menu</div>
-                    <div className="hud" onClick={this.hudChange.bind(this)} id="level">Level: {this.state.player.level}</div>
-                    <div className="hud" onClick={this.hudChange.bind(this)} id="xp">XP: {this.state.player.xp}</div>
-                    <div className="hud" onClick={this.hudChange.bind(this)} id="health">Health: {this.state.player.health}</div>
-                    <div className="hud" onClick={this.hudChange.bind(this)} id="damage">Damage: {this.state.player.damage}</div>
-                    <div className="hud" onClick={this.hudChange.bind(this)} id="weapon">Weapon: {this.state.player.weapon}</div>
+                    <div className="hud">'M' for Map</div>
+                    <div className="hud" id="level">Level: {object.player.level}</div>
+                    <div className="hud" id="xp">XP: {object.player.xp}</div>
+                    <div className="hud" id="health">Health: {object.player.health}</div>
+                    <div className="hud" id="weapon">Weapon: {object.player.weapon}</div>
+                    <div className="hud" id="armor">Armor: {object.player.armor}</div>
                 </div>
             </div>
         ); //end return()
