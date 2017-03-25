@@ -2,8 +2,6 @@
 //==the hidth variable holds the width and height (dimensions) of the map - global variable
 //==the maxTurn variable contols how many corners (or turns) the map can have - located in nextMove()
 //==the maxLength variable controls how potentially long before another turn - located in nextMove()
-
-
 var object = {
     player: { 
         class: 'player',
@@ -13,8 +11,8 @@ var object = {
         weapon: 'fist',
         armor: 'none',
         health: 50,
-        offense: 5,
-        defense: 5,
+        offense: 10,
+        defense: 4,
         offenseMultiplier: 1,
         defenseMultiplier: 1
     }, 
@@ -25,9 +23,9 @@ var object = {
         icon: 'pawn.png',
         health: 50,
         offense: 10,
-        defense: 10,
-        xpRewarrd: 5,
-        healthReward: 15
+        defense: 4,
+        xpReward: 5,
+        healthReward: 20
     }, 
     knight: {
         class: 'knight',
@@ -36,9 +34,9 @@ var object = {
         icon: 'knight.png',
         health:100,
         offense: 15,
-        defense: 15,
+        defense: 10,
         xpReward: 10,
-        healthReward: 25
+        healthReward: 40
     }, 
     king: {
         class: 'king',
@@ -47,7 +45,7 @@ var object = {
         icon: 'king.png',
         health: 200,
         offense: 25,
-        defense: 20,
+        defense: 16,
         xpReward: 50
     },
     health: {
@@ -85,22 +83,20 @@ var object = {
         levelNeeded: 2
     }
 };
-
-// a var for width and height
-var hidth = 40, playerLocation, populatedObject = [];//, tempPlayer;
+// hidth = width and height
+var hidth = 40, playerLocation, populatedObject = [], fighting = false;
 class Game extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            object: [],
-            player: object.player,
             grid: this.nextMove()
         }; //end this.state
     }; //end constructor()
-       
-    //in here somewhere remove class open, add class of thing (.player - .enemy1 - .enemy2 - health )
+    
+    ///////////////////Populate Map with Objects - placeObjects() is called from createObjectsToPlace()/////////////////////////////////////////////////
     placeObjects = (objectsArray) => {
         var randomCol, randomRow, coordinates, isOpen;
+        
         for (var i=0; i<objectsArray.length; i++) {
             isOpen = false;
             while (!isOpen) {
@@ -110,7 +106,7 @@ class Game extends React.Component {
                 if(document.getElementById(coordinates).classList.contains('open')) {//checks if the element has class 'open'
                     isOpen = true;
                     document.getElementById(coordinates).className = objectsArray[i].class; //giving it a class is for collision detection
-                    document.getElementById(coordinates).innerHTML = "<img src="+objectsArray[i].icon+" />"; 
+                    document.getElementById(coordinates).innerHTML = "<img src="+objectsArray[i].icon+" />";//onmouseover=\"displayTooltip("+objectsArray[i]+") \" 
                     document.getElementById(coordinates).setAttribute('index', objectsArray[i].index); //setting an index is to access the values of the object in populatedObject
                     if(i === objectsArray.length-1) { //this tests if we are at last of array, which is the player(last item to place)
                         playerLocation = coordinates;
@@ -145,24 +141,22 @@ class Game extends React.Component {
         } //end i
         populatedObject = objectsArray; //global variable that holds all the objects on the map
         this.placeObjects(objectsArray);
-        this.setState({
-            object: objectsArray,
-            player: objectsArray[objectsArray.length-1] //MAY NEED TO COME BACK AND PARSE/STRINGIFY OBJECT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        }); //end setState 
     }; //end createObjectsToPlace()
 
-    updateLevel = () => {
-        object.player.level = 1 + (Math.floor(object.player.xp/25));
-    };
-
-    updateHUD = () => {
+    /*updateLevel = () => { //update the level of the player - called from movePlayer()
+        var tempObj = 1 + (Math.floor(object.player.xp/25));
+        if (object.player.level < tempObj) {
+            alert('level ' + tempObj +' reached!');
+            object.player.level = tempObj;
+        };        
+    }; //end updateLevel()
+    updateHUD = () => { //updateHUD - called from movePlayer()
         document.getElementById('level').innerHTML = "Level: " + object.player.level;
         document.getElementById('xp').innerHTML = "XP: " + object.player.xp;
         document.getElementById('health').innerHTML = "Health: " + object.player.health;
         document.getElementById('weapon').innerHTML = "Weapon: " + object.player.weapon;
         document.getElementById('armor').innerHTML = "Armor: " + object.player.armor;
-    };
-    
+    }; //end updateHUD()*/    
     centerScreen = () => {
         var temp = playerLocation.split('x'),
             tdWidth = document.getElementById('0x0').clientWidth,
@@ -172,7 +166,7 @@ class Game extends React.Component {
         document.getElementById('grid').style.top = top+'px';
         document.getElementById('grid').style.left = left+'px';
     }; //end centerScreen()
-    
+    //////////////////////////////////ACTIONS - movePlayer() is called from controllerPress()/////////////////////////////////////////////////////////////////////////
     movePlayer = (nextSpot, directionFacing) => { //nextSpot comes from controllerPress()
         var oldSpot = document.getElementById(playerLocation),
             newSpot = document.getElementById(nextSpot),
@@ -181,117 +175,151 @@ class Game extends React.Component {
             tempObj = populatedObject[index],
             changeSettings = true;
         
+        function updateLevel() {
+            var tempObj = 1 + (Math.floor(object.player.xp/25));
+            if (object.player.level < tempObj) {
+                alert('level ' + tempObj +' reached!');
+                object.player.level = tempObj;
+            };        
+        };
+        function updateHUD() {
+            document.getElementById('level').innerHTML = "Level: " + object.player.level;
+            document.getElementById('xp').innerHTML = "XP: " + object.player.xp;
+            document.getElementById('health').innerHTML = "Health: " + object.player.health;
+            document.getElementById('weapon').innerHTML = "Weapon: " + object.player.weapon;
+            document.getElementById('armor').innerHTML = "Armor: " + object.player.armor;
+        };
+        function centerScreen() {
+            var temp = playerLocation.split('x'),
+            tdWidth = document.getElementById('0x0').clientWidth,
+            tdHeight = document.getElementById('0x0').clientHeight,
+            top = window.innerHeight/2 - (temp[1]*tdHeight),
+            left = window.innerWidth/2 - (temp[0]*tdWidth);
+            document.getElementById('grid').style.top = top+'px';
+            document.getElementById('grid').style.left = left+'px';
+        }; 
         function removeSpotAttributes (spot) {
             spot.removeAttribute('index');
             spot.className = 'open';
         }; //end removeSpotAttributes()
+        function endOfMove() {
+        console.log('endOfMove');
+            removeSpotAttributes(oldSpot);
+            removeSpotAttributes(newSpot);
+            oldSpot.innerHTML = "";            
+            newSpot.innerHTML = '<img src="player'+directionFacing+'.png" />';   
+            playerLocation = nextSpot;
+            updateLevel();
+            updateHUD();
+            centerScreen();
+        }; //end endOfMove()
 
-            //this whole area is for when you run into collectable items
-            if(classes.contains('open') || classes.contains('health') || classes.contains('point') || classes.contains('hammer') || classes.contains('axe') || classes.contains('sword') || classes.contains('shield')) {
-                if (classes.contains('point')) {
-                    object.player.xp += tempObj.xpReward;
-                } if (classes.contains('health')) {
-                    object.player.health += tempObj.healthReward;    
-                } if (classes.contains('hammer') || classes.contains('axe') || classes.contains('sword')) {
-                    if (object.player.level < tempObj.levelNeeded) { //player doesn't have level required
-                        alert('level ' + tempObj.levelNeeded + ' required for the ' + tempObj.class);
-                        changeSettings = false;
-                    } else { //player has level required
-                        console.log(tempObj);
-                        if (object.player.offenseMultiplier < tempObj.offenseMultiplier) {
-                        object.player.offenseMultiplier = tempObj.offenseMultiplier;
-                        object.player.weapon = tempObj.class;
-                        } //end if
-                        alert(tempObj.class + ' found!');
-                    } //end if/else
-                    console.log('asdfasdf');
-                } if (classes.contains('shield')) {
-                    object.player.defenseMultiplier = tempObj.defenseMultiplier;
-                    object.player.armor = 'shield';
-                    alert('shield found!');
-                } //end item
-                if(changeSettings) {
-                    //the next few lines move the player, and change the necessary icons/attributes
-                    removeSpotAttributes(oldSpot); 
-                    removeSpotAttributes(newSpot);
-                    oldSpot.innerHTML = "";            
-                    newSpot.innerHTML = '<img src="player'+directionFacing+'.png" />';   
-                    playerLocation = nextSpot;
-                } //end if
-            } else if (classes.contains('pawn') || classes.contains('knight') || classes.contains('king')) { //when you run into an enemy
-                changeSettings = false;
-                console.log('enemy');
-                if (object.player.level < tempObj.levelNeeded) {
-                    alert('you need to be level ' + tempObj.levelNeeded + ' to fight the ' + tempObj.class);
-                } //end if (level not enough)
-                if(changeSettings) {
-                    //the next few lines move the player, and change the necessary icons/attributes
-                    removeSpotAttributes(oldSpot); 
-                    removeSpotAttributes(newSpot);
-                    oldSpot.innerHTML = "";            
-                    newSpot.innerHTML = '<img src="player'+directionFacing+'.png" />';   
-                    playerLocation = nextSpot;
-                } //end if
-            } //end if (enemy)
-
-        
-        console.log(object.player);
-        this.updateLevel();
-        this.updateHUD();
-        this.centerScreen();
+        //the first part of this series of tests is for when the player runs into collectable items or an open spot - open/health/point/weapons/shield ||||||||| the second part is for running into enemies/fighting
+        if(classes.contains('open') || classes.contains('health') || classes.contains('point') || classes.contains('hammer') || classes.contains('axe') || classes.contains('sword') || classes.contains('shield')) {
+            if (classes.contains('point')) {
+                object.player.xp += tempObj.xpReward;
+            } if (classes.contains('health')) {
+                object.player.health += tempObj.healthReward;    
+            } if (classes.contains('hammer') || classes.contains('axe') || classes.contains('sword')) {
+                if (object.player.level < tempObj.levelNeeded) { /////////////////////////////////////////////////player doesn't have level required
+                    alert('level ' + tempObj.levelNeeded + ' required for the ' + tempObj.class);
+                    changeSettings = false;
+                } else { //////////////////////////////////////////////////player has level required
+                    if (object.player.offenseMultiplier < tempObj.offenseMultiplier) {
+                    object.player.offenseMultiplier = tempObj.offenseMultiplier;
+                    object.player.weapon = tempObj.class;
+                    } //end if
+                    alert(tempObj.class + ' found!');
+                } //end if/else
+            } if (classes.contains('shield')) {
+                object.player.defenseMultiplier = tempObj.defenseMultiplier;
+                object.player.armor = 'shield';
+                alert('shield found!');
+            } //end item
+            if(changeSettings) { //this stops the player from moving on a wall or on an enemy/item it cant get yet - the subsequent line change the necessary icons/attributes
+                endOfMove();
+            } //end if
+        } else if (classes.contains('pawn') || classes.contains('knight') || classes.contains('king')) { //when you run into an enemy  |||||||||||||||||||||||||SECOND PART||||||||||||||||||||||||
+            changeSettings = false;
+            if (object.player.level < tempObj.levelNeeded) { ///////////////////if player level not high enough
+                alert('you need to be level ' + tempObj.levelNeeded + ' to fight the ' + tempObj.class);
+            } else { ///////////////////////////////////////////////////////////////////////////// leveled up enough to fight
+                var myTurn = true, interval;
+                fighting = true;
+                interval = setInterval(function () {
+                    if(myTurn) { /////////////players turn ------------ new calculation needed
+                        populatedObject[index].health -= Math.floor(object.player.offense * (object.player.offenseMultiplier + object.player.level/10) - populatedObject[index].defense);
+                        myTurn = false;
+                    } else { ///////////////computers turn --------------
+                        object.player.health -= Math.floor(populatedObject[index].offense * (1+populatedObject[index].level/10) - (object.player.defense * object.player.defenseMultiplier));
+                        myTurn = true;
+                    } ///////////end of hits
+                        console.log('cpu health = ' +populatedObject[index].health);
+                        console.log('player health = ' +object.player.health);
+                    if(object.player.health <= 0 || populatedObject[index].health <= 0) { //if the fight is over - someone lost - need different things to happen for player win||cpu win
+                        clearInterval(interval);
+                        fighting = false;
+                        if(object.player.health <= 0) { //computer won - player lost
+                            //dont do game over, ...just take em down a level or somethin
+                            alert('GAME OVER');
+                        } else { ////////////////////////////////////////////////////////////////////player won - computer lost
+                            //add xpreward
+                            endOfMove(); ///will probly add something here, ...this will probly only happen if the player won
+                        }
+                    } // end if
+                }, 1000); //end setInterval()
+            } //end fight
+        } //end if (enemy)
     }; //end movePlayer()
 
 ////////////////////////////////////////////////CONTROLS///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     controllerPress = (e) => { //this is where all the game controls are
-        //var tempPlayer = object.player;
-        var keyPressed = e.keyCode; //get what button was pushed
-        var temp = playerLocation.split('x'), newSpot;
-        switch (keyPressed) {
-            case 37: case 65: /*left arrow or 'a' pressed*/
-                if(temp[0] > 0) { //meaning x value of current spot is not at the edge of the board, so left won't able to be used if your at the edge
-                    temp[0]--;
-                    newSpot = temp.join('x');
-                    this.movePlayer(newSpot, 'Left');
-                }
-                break;
-            case 38: case 87: /*up arrow or 'w' pressed*/
-                if(temp[1] > 0) { //meaning x value of current spot is not at the edge of the board, so left won't able to be used if your at the edge
-                    temp[1]--;
-                    newSpot = temp.join('x');
-                    this.movePlayer(newSpot, 'Backward');
-                }
-                break;
-            case 39: case 68: /*right arrow or 'd' pressed*/
-                if(temp[0] < hidth-1) { //meaning x value of current spot is not at the edge of the board, so left won't able to be used if your at the edge
-                    temp[0]++;
-                    newSpot = temp.join('x');
-                    this.movePlayer(newSpot, 'Right');
-                }
-                break;
-            case 40: case 83: /*down arrow or 's' pressed*/
-                if(temp[1] < hidth-1) { //meaning x value of current spot is not at the edge of the board, so left won't able to be used if your at the edge
-                    temp[1]++;
-                    newSpot = temp.join('x');
-                    this.movePlayer(newSpot, 'Forward');
-                }
-                break;
-            case 77: //m
-                document.getElementById('mapBackdrop').style.visibility = 'visible';
-                document.getElementById('mapTable').style.visibility = 'visible';
-                break;
-            default:
-                break;
-        } //end switch()
+        if(!fighting) { /////////////////global variable ---- set in movePlayer()
+            //var tempPlayer = object.player;
+            var keyPressed = e.keyCode; //get what button was pushed
+            var temp = playerLocation.split('x'), newSpot;
+            switch (keyPressed) {
+                case 37: case 65: /*left arrow or 'a' pressed*/
+                    if(temp[0] > 0) { //meaning x value of current spot is not at the edge of the board, so left won't able to be used if your at the edge
+                        temp[0]--;
+                        newSpot = temp.join('x');
+                        this.movePlayer(newSpot, 'Left');
+                    }
+                    break;
+                case 38: case 87: /*up arrow or 'w' pressed*/
+                    if(temp[1] > 0) { //meaning x value of current spot is not at the edge of the board, so left won't able to be used if your at the edge
+                        temp[1]--;
+                        newSpot = temp.join('x');
+                        this.movePlayer(newSpot, 'Backward');
+                    }
+                    break;
+                case 39: case 68: /*right arrow or 'd' pressed*/
+                    if(temp[0] < hidth-1) { //meaning x value of current spot is not at the edge of the board, so left won't able to be used if your at the edge
+                        temp[0]++;
+                        newSpot = temp.join('x');
+                        this.movePlayer(newSpot, 'Right');
+                    }
+                    break;
+                case 40: case 83: /*down arrow or 's' pressed*/
+                    if(temp[1] < hidth-1) { //meaning x value of current spot is not at the edge of the board, so left won't able to be used if your at the edge
+                        temp[1]++;
+                        newSpot = temp.join('x');
+                        this.movePlayer(newSpot, 'Forward');
+                    }
+                    break;
+                case 77: //m
+                    document.getElementById('mapBackdrop').style.visibility = 'visible';
+                    document.getElementById('mapTable').style.visibility = 'visible';
+                    break;
+                default:
+                    break;
+            } //end switch()
+        }//end if (!fighting)
     }; //end controllerPress()
     
     controllerRelease = (e) => {
         var keyPressed = e.keyCode; //get what button was pushed
         switch (keyPressed) {
-            //case 40: case 83: case 39: case 68: case 38: case 87: case 37: case 65: //and arrows or directional letters
-              //  this.setState({
-                //    player: tempPlayer
-                //});
-            //    break;
             case 77: //m
                 document.getElementById('mapBackdrop').style.visibility = 'hidden';
                 document.getElementById('mapTable').style.visibility = 'hidden';
