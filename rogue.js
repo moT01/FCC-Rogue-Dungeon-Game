@@ -83,8 +83,9 @@ var object = {
         levelNeeded: 2
     }
 };
+
 // hidth = width and height
-var hidth = 40, playerLocation, populatedObject = [], fighting = false;
+var hidth = 80, playerLocation, populatedObject = [], fighting = false;
 class Game extends React.Component {
     constructor(props) {
         super(props);
@@ -96,7 +97,7 @@ class Game extends React.Component {
     ///////////////////Populate Map with Objects - placeObjects() is called from createObjectsToPlace()/////////////////////////////////////////////////
     placeObjects = (objectsArray) => {
         var randomCol, randomRow, coordinates, isOpen;
-        
+
         for (var i=0; i<objectsArray.length; i++) {
             isOpen = false;
             while (!isOpen) {
@@ -106,7 +107,7 @@ class Game extends React.Component {
                 if(document.getElementById(coordinates).classList.contains('open')) {//checks if the element has class 'open'
                     isOpen = true;
                     document.getElementById(coordinates).className = objectsArray[i].class; //giving it a class is for collision detection
-                    document.getElementById(coordinates).innerHTML = "<img src="+objectsArray[i].icon+" />";//onmouseover=\"displayTooltip("+objectsArray[i]+") \" 
+                    document.getElementById(coordinates).innerHTML = "<img src="+objectsArray[i].icon+"  onmouseover=\"the()\"  />";//onmouseover=\"displayTooltip("+objectsArray[i]+") \" 
                     document.getElementById(coordinates).setAttribute('index', objectsArray[i].index); //setting an index is to access the values of the object in populatedObject
                     if(i === objectsArray.length-1) { //this tests if we are at last of array, which is the player(last item to place)
                         playerLocation = coordinates;
@@ -143,20 +144,6 @@ class Game extends React.Component {
         this.placeObjects(objectsArray);
     }; //end createObjectsToPlace()
 
-    /*updateLevel = () => { //update the level of the player - called from movePlayer()
-        var tempObj = 1 + (Math.floor(object.player.xp/25));
-        if (object.player.level < tempObj) {
-            alert('level ' + tempObj +' reached!');
-            object.player.level = tempObj;
-        };        
-    }; //end updateLevel()
-    updateHUD = () => { //updateHUD - called from movePlayer()
-        document.getElementById('level').innerHTML = "Level: " + object.player.level;
-        document.getElementById('xp').innerHTML = "XP: " + object.player.xp;
-        document.getElementById('health').innerHTML = "Health: " + object.player.health;
-        document.getElementById('weapon').innerHTML = "Weapon: " + object.player.weapon;
-        document.getElementById('armor').innerHTML = "Armor: " + object.player.armor;
-    }; //end updateHUD()*/    
     centerScreen = () => {
         var temp = playerLocation.split('x'),
             tdWidth = document.getElementById('0x0').clientWidth,
@@ -176,7 +163,7 @@ class Game extends React.Component {
             changeSettings = true;
         
         function updateLevel() {
-            var tempObj = 1 + (Math.floor(object.player.xp/25));
+            var tempObj = 1 + (Math.floor(object.player.xp/50));
             if (object.player.level < tempObj) {
                 alert('level ' + tempObj +' reached!');
                 object.player.level = tempObj;
@@ -236,39 +223,37 @@ class Game extends React.Component {
                 object.player.armor = 'shield';
                 alert('shield found!');
             } //end item
-            if(changeSettings) { //this stops the player from moving on a wall or on an enemy/item it cant get yet - the subsequent line change the necessary icons/attributes
+            if(changeSettings) { //this stops the player from moving on a wall or on an enemy/item it cant get yet
                 endOfMove();
             } //end if
         } else if (classes.contains('pawn') || classes.contains('knight') || classes.contains('king')) { //when you run into an enemy  |||||||||||||||||||||||||SECOND PART||||||||||||||||||||||||
             changeSettings = false;
-            if (object.player.level < tempObj.levelNeeded) { ///////////////////if player level not high enough
-                alert('you need to be level ' + tempObj.levelNeeded + ' to fight the ' + tempObj.class);
-            } else { ///////////////////////////////////////////////////////////////////////////// leveled up enough to fight
-                var myTurn = true, interval;
-                fighting = true;
-                interval = setInterval(function () {
-                    if(myTurn) { /////////////players turn ------------ new calculation needed
-                        populatedObject[index].health -= Math.floor(object.player.offense * (object.player.offenseMultiplier + object.player.level/10) - populatedObject[index].defense);
-                        myTurn = false;
-                    } else { ///////////////computers turn --------------
-                        object.player.health -= Math.floor(populatedObject[index].offense * (1+populatedObject[index].level/10) - (object.player.defense * object.player.defenseMultiplier));
-                        myTurn = true;
-                    } ///////////end of hits
-                        console.log('cpu health = ' +populatedObject[index].health);
-                        console.log('player health = ' +object.player.health);
-                    if(object.player.health <= 0 || populatedObject[index].health <= 0) { //if the fight is over - someone lost - need different things to happen for player win||cpu win
-                        clearInterval(interval);
-                        fighting = false;
-                        if(object.player.health <= 0) { //computer won - player lost
-                            //dont do game over, ...just take em down a level or somethin
-                            alert('GAME OVER');
-                        } else { ////////////////////////////////////////////////////////////////////player won - computer lost
-                            //add xpreward
-                            endOfMove(); ///will probly add something here, ...this will probly only happen if the player won
-                        }
-                    } // end if
-                }, 1000); //end setInterval()
-            } //end fight
+            var myTurn = true, interval;
+            fighting = true; //used as a test in controllerPress() so you can't move when fighting
+            interval = setInterval(function () {
+                if(myTurn) { /////////////players turn ------------ new calculation needed
+                    populatedObject[index].health -= Math.floor(object.player.offense * (object.player.offenseMultiplier + object.player.level/10) - populatedObject[index].defense);
+                    myTurn = false;
+                } else { ///////////////computers turn --------------
+                    object.player.health -= Math.floor(populatedObject[index].offense * (1+populatedObject[index].level/10) - (object.player.defense * object.player.defenseMultiplier));
+                    myTurn = true;
+                } ///////////end of hits
+                updateHUD();
+                    console.log('cpu health = ' +populatedObject[index].health);
+                    console.log('player health = ' +object.player.health);
+                if(object.player.health <= 0 || populatedObject[index].health <= 0) { //if the fight is over - someone lost - need different things to happen for player win||cpu win
+                    clearInterval(interval);
+                    fighting = false;
+                    if(object.player.health <= 0) { //computer won - player lost
+                        //dont do game over, ...just take em down a level or somethin
+                        alert('GAME OVER');
+                    } else { ////////////////////////////////////////////////////////////////////player won - computer lost
+                        //if opponent was king, you win!!
+                        //add xpreward
+                        endOfMove(); ///will probly add something here, ...this will probly only happen if the player won
+                    }
+                } // end if
+            }, 1000); //end setInterval()
         } //end if (enemy)
     }; //end movePlayer()
 
@@ -336,7 +321,7 @@ class Game extends React.Component {
         document.addEventListener('keydown', this.controllerPress.bind(this));
         document.addEventListener('keyup', this.controllerRelease.bind(this));
     }; //end componentDidMount()
-    
+
 ////////////////////////////////////////////////MAP GENERATOR///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     fullArray = () => {
         var array = [];
@@ -389,6 +374,9 @@ class Game extends React.Component {
 //////////////////////////////////////////////////////////END MAP GENERATOR////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     render() {
+        function the(e) {
+    console.log(e);
+}
         return (
             <div>
                 <table className="grid" id="grid"> 
@@ -414,6 +402,7 @@ class Game extends React.Component {
                 </div>
 
                 <div className="hudContainer">
+                    <div className="hud">PLAYER 1</div>
                     <div className="hud">'M' for Map</div>
                     <div className="hud" id="level">Level: {object.player.level}</div>
                     <div className="hud" id="xp">XP: {object.player.xp}</div>
