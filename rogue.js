@@ -300,7 +300,7 @@ class Game extends React.Component {
             fighting = true; //used as a test in controllerPress() so you can't move when fighting
             interval = setInterval(function () {
                 if(myTurn) { /////////////players turn ------------ new calculation needed
-                    populatedObject[index].health -= Math.floor(object.player.offense * (object.player.offenseMultiplier + object.player.level/10) - populatedObject[index].defense);
+                    populatedObject[index].health -= Math.floor(object.player.offense * (object.player.offenseMultiplier + object.player.level/10) - populatedObject[index].defense);//some times computers health goes up --not good                  
                     myTurn = false;
                 } else { ///////////////computers turn --------------
                     object.player.health -= Math.floor(populatedObject[index].offense * (1+populatedObject[index].level/10) - (object.player.defense * object.player.defenseMultiplier));
@@ -385,7 +385,10 @@ class Game extends React.Component {
         } //end switch()
     }; //end controllerRelease()
 ////////////////////////////////////////////////END CONTROLS///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+    componentWillMount() {
+        document.getElementById('loader').style.display = "none";
+    }    
+
     componentDidMount() {
         this.createObjectsToPlace();
         this.centerScreen();
@@ -459,7 +462,7 @@ class Game extends React.Component {
 
                 <div id="mapBackdrop">
                     <table id="mapTable"> 
-                        {this.state.grid.map((obj, row) =>                
+                        {this.state.grid.map((obj, row) =>
                             <tr className="">
                             {obj.map((obj2, col) =>
                                 <td className={obj2 ? 'wall'+Math.floor(Math.random()*10)+''  : 'open'} id="map"></td>      
