@@ -472,8 +472,7 @@ class Game extends React.Component {
                     </table>
                 </div>
 
-                <div className="hudContainer">  
-                    <div className="hud">PLAYER</div>
+                <div className="hudContainer">
                     <div className="hud" id="level">Level: {object.player.level}</div>
                     <div className="hud" id="xp">XP: {object.player.xp}</div>
                     <div className="hud" id="health">Health: {object.player.health}</div>
