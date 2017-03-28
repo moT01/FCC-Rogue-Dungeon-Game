@@ -9,7 +9,7 @@ var object = {
         level: 1,
         xp: 0,
         weapon: 'fist',
-        armor: 'none',
+        armor: 'body armor',
         health: 50,
         offense: 10,
         defense: 4,
@@ -46,7 +46,8 @@ var object = {
         health: 200,
         offense: 25,
         defense: 16,
-        xpReward: 50
+        xpReward: 50,
+        healthReward: 100
     },
     health: {
         class: 'health',
@@ -85,7 +86,7 @@ var object = {
 };
 
 // hidth = width and height
-var hidth = 80, playerLocation, populatedObject = [], fighting = false;
+var hidth = 70, playerLocation, populatedObject = [], fighting = false;
 class Game extends React.Component {
     constructor(props) {
         super(props);
@@ -93,6 +94,33 @@ class Game extends React.Component {
             grid: this.nextMove()
         }; //end this.state
     }; //end constructor()
+    
+    toolTip = (e) => {
+        if(e.target.tagName === "IMG") {
+            var parentIndex = parseInt(e.target.parentElement.attributes.index.value),
+            object = populatedObject[parentIndex],
+            toolTip = document.getElementById('toolTip');
+            console.log(object);
+            if(object.class == 'pawn' || object.class == 'knight' || object.class == 'king') {
+                toolTip.innerHTML = "<div><b>"+object.class.toUpperCase()+"</b></div><div>Health: "+object.health+"</div><div>Base Damage: "+object.offense+"</div><div>Base Defense: "+object.defense+"</div><div>+"+object.xpReward+" XP</div><div>+"+object.healthReward+" Health</div>";                   
+            } else if (object.class == 'health') {
+                toolTip.innerHTML = "<div>+"+object.healthReward+" health</div>";
+            } else if (object.class == 'point') {
+                toolTip.innerHTML = "<div>+"+object.xpReward+" XP</div>";
+            } else {
+                toolTip.innerHTML = "<div><b>"+object.class.toUpperCase()+"</b></div>"
+            }
+            toolTip.style.visibility = "visible";       
+            toolTip.style.top = e.pageY - 20 +'px';
+            toolTip.style.left = e.pageX + 20 +'px';
+            toolTip.style.opacity = 0.8;
+        }    
+    }; //end toolTip()
+
+    hideToolTip = () => {
+        document.getElementById('toolTip').style.opacity = 0;
+        document.getElementById('toolTip').style.visibility = "hidden";
+    } //end hideToolTip()
     
     ///////////////////Populate Map with Objects - placeObjects() is called from createObjectsToPlace()/////////////////////////////////////////////////
     placeObjects = (objectsArray) => {
@@ -107,7 +135,7 @@ class Game extends React.Component {
                 if(document.getElementById(coordinates).classList.contains('open')) {//checks if the element has class 'open'
                     isOpen = true;
                     document.getElementById(coordinates).className = objectsArray[i].class; //giving it a class is for collision detection
-                    document.getElementById(coordinates).innerHTML = "<img src="+objectsArray[i].icon+"  onmouseover=\"the()\"  />";//onmouseover=\"displayTooltip("+objectsArray[i]+") \" 
+                    document.getElementById(coordinates).innerHTML = "<img src="+objectsArray[i].icon+" />";//onmouseover=\"displayTooltip("+objectsArray[i]+") \" 
                     document.getElementById(coordinates).setAttribute('index', objectsArray[i].index); //setting an index is to access the values of the object in populatedObject
                     if(i === objectsArray.length-1) { //this tests if we are at last of array, which is the player(last item to place)
                         playerLocation = coordinates;
@@ -135,6 +163,42 @@ class Game extends React.Component {
         for (var i=0; i<numberOfObjects.length; i++) {
             for(var j=0; j<numberOfObjects[i][1]; j++) {
                 tempObj = JSON.parse(JSON.stringify(object[numberOfObjects[i][0]]));
+                switch(numberOfObjects[i][0]) {
+                    case "pawn":
+                        tempObj.health = Math.floor(Math.random() * 20 + 40);
+                        tempObj.offense = Math.floor(Math.random() * 6 + 7);
+                        tempObj.defense = Math.floor(Math.random() * 4 + 2);
+                        tempObj.healthReward = Math.floor(Math.random() * 10 + 15);
+                        tempObj.xpReward = Math.floor(Math.random() * 5 + 5);
+                        break;
+                    case "knight":
+                        tempObj.health = Math.floor(Math.random() * 40 + 80);
+                        tempObj.offense = Math.floor(Math.random() * 10 + 10);
+                        tempObj.defense = Math.floor(Math.random() * 6 + 7);
+                        tempObj.healthReward = Math.floor(Math.random() * 20 + 35);
+                        tempObj.xpReward = Math.floor(Math.random() * 10 + 20);
+                        break;
+                    case "king":
+                        tempObj.health = Math.floor(Math.random() * 20 + 190);
+                        tempObj.offense = Math.floor(Math.random() * 10 + 20);
+                        tempObj.defense = Math.floor(Math.random() * 5 + 15);
+                        tempObj.healthReward = Math.floor(Math.random() * 10 + 40);
+                        tempObj.xpReward = Math.floor(Math.random() * 10 + 45);
+                        break;
+                    case "health":
+                        tempObj.healthReward = Math.floor(Math.random() * 5 + 5);
+                        break;
+                    case "point":
+                        tempObj.xpReward = Math.floor(Math.random() * 2 + 1);
+                        break;
+                    default:
+                        break;
+                }
+                //health 25-75?
+                //offense 5-10
+                //defense 3-5
+                //xpreward 5-10
+                //health reward = 15-25
                 tempObj.index = index;
                 objectsArray.push(tempObj);
                 index++;
@@ -173,8 +237,8 @@ class Game extends React.Component {
             document.getElementById('level').innerHTML = "Level: " + object.player.level;
             document.getElementById('xp').innerHTML = "XP: " + object.player.xp;
             document.getElementById('health').innerHTML = "Health: " + object.player.health;
-            document.getElementById('weapon').innerHTML = "Weapon: " + object.player.weapon;
-            document.getElementById('armor').innerHTML = "Armor: " + object.player.armor;
+            document.getElementById('weapon').innerHTML = "Weapon: " + object.player.weapon.toUpperCase();
+            document.getElementById('armor').innerHTML = "Armor: " + object.player.armor.toUpperCase();
         };
         function centerScreen() {
             var temp = playerLocation.split('x'),
@@ -190,7 +254,6 @@ class Game extends React.Component {
             spot.className = 'open';
         }; //end removeSpotAttributes()
         function endOfMove() {
-        console.log('endOfMove');
             removeSpotAttributes(oldSpot);
             removeSpotAttributes(newSpot);
             oldSpot.innerHTML = "";            
@@ -212,16 +275,21 @@ class Game extends React.Component {
                     alert('level ' + tempObj.levelNeeded + ' required for the ' + tempObj.class);
                     changeSettings = false;
                 } else { //////////////////////////////////////////////////player has level required
-                    if (object.player.offenseMultiplier < tempObj.offenseMultiplier) {
+                    if (object.player.offenseMultiplier < tempObj.offenseMultiplier) { //weapon is better, ...change multiplier
                     object.player.offenseMultiplier = tempObj.offenseMultiplier;
                     object.player.weapon = tempObj.class;
                     } //end if
                     alert(tempObj.class + ' found!');
                 } //end if/else
             } if (classes.contains('shield')) {
-                object.player.defenseMultiplier = tempObj.defenseMultiplier;
-                object.player.armor = 'shield';
-                alert('shield found!');
+                if(object.player.level < tempObj.levelNeeded) {
+                    alert('level ' + tempObj.levelNeeded + ' required for the ' + tempObj.class);
+                    changeSettings = false;
+                } else {
+                    object.player.defenseMultiplier = tempObj.defenseMultiplier;
+                    object.player.armor = 'shield';
+                    alert('shield found!');
+                }
             } //end item
             if(changeSettings) { //this stops the player from moving on a wall or on an enemy/item it cant get yet
                 endOfMove();
@@ -246,12 +314,15 @@ class Game extends React.Component {
                     fighting = false;
                     if(object.player.health <= 0) { //computer won - player lost
                         //dont do game over, ...just take em down a level or somethin
-                        alert('GAME OVER');
+                        alert('YOU LOSE');
                     } else { ////////////////////////////////////////////////////////////////////player won - computer lost
-                        //if opponent was king, you win!!
-                        //add xpreward
+                        object.player.health += populatedObject[index].healthReward;
+                        object.player.xp += populatedObject[index].xpReward;
                         endOfMove(); ///will probly add something here, ...this will probly only happen if the player won
-                    }
+                        if(classes.contains('king')) {
+                            alert('You defeated the King, the dungeon is now yours!');
+                        } //end if (king)
+                    } //end player won
                 } // end if
             }, 1000); //end setInterval()
         } //end if (enemy)
@@ -335,8 +406,8 @@ class Game extends React.Component {
     }; //end fullArray
 
     nextMove = () => {
-        var maxTurn = 1200;
-        var maxLength = 8;
+        var maxTurn = 800;
+        var maxLength = 10;
         var oldArr = this.fullArray();
         var curRow = Math.floor(Math.random() * hidth);
         var curCol = Math.floor(Math.random() * hidth);
@@ -374,16 +445,13 @@ class Game extends React.Component {
 //////////////////////////////////////////////////////////END MAP GENERATOR////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     render() {
-        function the(e) {
-    console.log(e);
-}
         return (
             <div>
                 <table className="grid" id="grid"> 
                     {this.state.grid.map((obj, row) =>                
                         <tr className="">
                         {obj.map((obj2, col) => 
-                            <td className={obj2 ? 'wall'+Math.floor(Math.random()*10)+'' : 'open'} id={col+'x'+row} key={""+ row + col}></td>      
+                            <td className={obj2 ? 'wall'+Math.floor(Math.random()*10)+'' : 'open'} id={col+'x'+row} key={""+ row + col} onMouseOver={this.toolTip.bind(this)} onMouseOut={this.hideToolTip.bind(this)}></td>      
                         )}
                         </tr>        
                     )}
@@ -401,15 +469,17 @@ class Game extends React.Component {
                     </table>
                 </div>
 
-                <div className="hudContainer">
-                    <div className="hud">PLAYER 1</div>
-                    <div className="hud">'M' for Map</div>
+                <div className="hudContainer">  
+                    <div className="hud">PLAYER</div>
                     <div className="hud" id="level">Level: {object.player.level}</div>
                     <div className="hud" id="xp">XP: {object.player.xp}</div>
                     <div className="hud" id="health">Health: {object.player.health}</div>
-                    <div className="hud" id="weapon">Weapon: {object.player.weapon}</div>
-                    <div className="hud" id="armor">Armor: {object.player.armor}</div>
+                    <div className="hud" id="weapon">Weapon: {object.player.weapon.toUpperCase()}</div>
+                    <div className="hud" id="armor">Armor: {object.player.armor.toUpperCase()}</div>
+                    <div className="hud">'M' for Map</div>                
                 </div>
+        
+                <div className="toolTip" id="toolTip"></div>
             </div>
         ); //end return()
     } //end render()
