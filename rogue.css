@@ -134,5 +134,8 @@ get distorted and mess up the map*/
     position: fixed; 
     top: 100px;
     left: 100px;
-    transition: opacity 400ms linear 0ms;
-}
+    transition: opacity 400ms linear 0ms; }
+
+#loader {
+    margin: 45vh 45vw;
+    color: white; }
