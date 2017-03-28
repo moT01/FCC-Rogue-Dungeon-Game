@@ -95,6 +95,10 @@ class Game extends React.Component {
         }; //end this.state
     }; //end constructor()
     
+    startGame = () => {
+        document.getElementById('instructionsBackdrop').style.visibility = "hidden";
+    }; //end startGame()
+    
     toolTip = (e) => {
         if(e.target.tagName === "IMG") {
             var parentIndex = parseInt(e.target.parentElement.attributes.index.value),
@@ -180,7 +184,7 @@ class Game extends React.Component {
                         break;
                     case "king":
                         tempObj.health = Math.floor(Math.random() * 20 + 190);
-                        tempObj.offense = Math.floor(Math.random() * 10 + 20);
+                        tempObj.offense = Math.floor(Math.random() * 5 + 15);
                         tempObj.defense = Math.floor(Math.random() * 5 + 15);
                         tempObj.healthReward = Math.floor(Math.random() * 10 + 40);
                         tempObj.xpReward = Math.floor(Math.random() * 10 + 45);
@@ -217,7 +221,8 @@ class Game extends React.Component {
         document.getElementById('grid').style.top = top+'px';
         document.getElementById('grid').style.left = left+'px';
     }; //end centerScreen()
-    //////////////////////////////////ACTIONS - movePlayer() is called from controllerPress()/////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////ACTIONS - movePlayer() is called from controllerPress()/////////////////////////////////////////////////////////////////////////
     movePlayer = (nextSpot, directionFacing) => { //nextSpot comes from controllerPress()
         var oldSpot = document.getElementById(playerLocation),
             newSpot = document.getElementById(nextSpot),
@@ -385,6 +390,7 @@ class Game extends React.Component {
         } //end switch()
     }; //end controllerRelease()
 ////////////////////////////////////////////////END CONTROLS///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     componentWillMount() {
         document.getElementById('loader').style.display = "none";
     };
@@ -480,7 +486,24 @@ class Game extends React.Component {
                     <div className="hud" id="armor">Armor: {object.player.armor.toUpperCase()}</div>
                     <div className="hud">'M' for Map</div>                
                 </div>
-        
+                
+                <div id="instructionsBackdrop">
+                    <div className="center">
+                        <div className="block"><h1><b>Welcome to my Dungeon Crawler</b></h1></div>
+                        <ul className="block left"><h3>
+                            <li>Enter your browsers 'Full Screen' mode for the best experience</li>
+                            <li>Press 'M' in game to see the menu</li>
+                            <li>Use the arrows or 'ASWD' controls to move</li>
+                            <li>Run into an enemy to fight it or an item to collect it</li>
+                            <li>Hover over items with the mouse to see details</li>
+                            <li>Collecting items will help you on your journey</li>
+                            <li>Defeat the king to claim the dungeon</li>
+                            <li>Good Luck!</li></h3>
+                        </ul>
+                        <div className="continueButton block" onClick={this.startGame.bind(this)}><b>Continue</b></div>
+                    </div>
+                </div>
+                
                 <div className="toolTip" id="toolTip"></div>
             </div>
         ); //end return()
