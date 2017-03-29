@@ -1,4 +1,4 @@
-//To change the rules of the map creation 
+//To change the rules of the map creation
 //==the hidth variable holds the width and height (dimensions) of the map - global variable
 //==the maxTurn variable contols how many corners (or turns) the map can have - located in nextMove()
 //==the maxLength variable controls how potentially long before another turn - located in nextMove()
@@ -86,7 +86,7 @@ var object = {
 };
 
 // hidth = width and height
-var hidth = 70, playerLocation, populatedObject = [], fighting = false;
+var hidth = 80, playerLocation, populatedObject = [], fighting = false;
 class Game extends React.Component {
     constructor(props) {
         super(props);
@@ -155,8 +155,8 @@ class Game extends React.Component {
             ['pawn', 10],
             ['knight', 5],
             ['king', 1],
-            ['health', 20],
-            ['point', 20],
+            ['health', 15],
+            ['point', 15],
             ['hammer', 1],
             ['axe', 1],
             ['sword', 1],
@@ -170,7 +170,7 @@ class Game extends React.Component {
                 switch(numberOfObjects[i][0]) {
                     case "pawn":
                         tempObj.health = Math.floor(Math.random() * 20 + 40);
-                        tempObj.offense = Math.floor(Math.random() * 6 + 7);
+                        tempObj.offense = Math.floor(Math.random() * 4 + 10);
                         tempObj.defense = Math.floor(Math.random() * 4 + 2);
                         tempObj.healthReward = Math.floor(Math.random() * 10 + 15);
                         tempObj.xpReward = Math.floor(Math.random() * 5 + 5);
@@ -310,11 +310,15 @@ class Game extends React.Component {
             fighting = true; //used as a test in controllerPress() so you can't move when fighting
             interval = setInterval(function () {
                 if(myTurn) { /////////////players turn ------------ 
-                    populatedObject[index].health -= Math.floor(object.player.offense * (object.player.offenseMultiplier + object.player.level/10) - populatedObject[index].defense);//some times computers health goes up --not good                  
+                    var damage = Math.floor(object.player.offense * (object.player.offenseMultiplier + object.player.level/10) - populatedObject[index].defense);
+                    if (damage<0) { damage = 1; }
+                    populatedObject[index].health -= damage;
                     if(populatedObject[index].health < 0) { populatedObject[index].health = 0; }
                     myTurn = false;
                 } else { ///////////////computers turn --------------
-                    object.player.health -= Math.floor(populatedObject[index].offense * (1+populatedObject[index].level/10) - (object.player.defense * object.player.defenseMultiplier));
+                    var damage = Math.floor(populatedObject[index].offense * (1+populatedObject[index].level/10) - (object.player.defense * object.player.defenseMultiplier));
+                    if(damage < 0) { damage = 1; }
+                    object.player.health -= damage;
                     if(object.player.health < 0) { object.player.health = 0; }
                     myTurn = true;
                 } ///////////end of hits
@@ -325,6 +329,7 @@ class Game extends React.Component {
                     fighting = false;
                     if(object.player.health <= 0) { //computer won - player lost
                         alert('You Lost!');
+                        document.location.reload();
                     } else { ////////////////////////////////////////////////////////////////////player won - computer lost
                         object.player.health += populatedObject[index].healthReward;
                         object.player.xp += populatedObject[index].xpReward;
