@@ -127,7 +127,6 @@ get distorted and mess up the map*/
     height: 40px; 
     position: fixed;
     top: -40px;
-    left: -155px;
     align-items: flex-end;
     opacity: 0;
     transition: all 400ms linear 0ms; }
@@ -139,6 +138,15 @@ get distorted and mess up the map*/
     border: 2px solid black;
     border-radius: 10px;
     height: 20px; }
+
+.hud2 {
+    margin: 2.5px;
+    padding: 5px 5px 0 5px;
+    background-color: #000;
+    border: 2px solid #999;
+    border-radius: 10px;
+    height: 20px; 
+    color: #999; }
 /***********end HUD display**********/
 
 #toolTip {

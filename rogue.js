@@ -320,8 +320,6 @@ class Game extends React.Component {
                 } ///////////end of hits
                 updateHUD();
                 updateEnemyHUD();
-                    console.log('cpu health = ' +populatedObject[index].health);
-                    console.log('player health = ' +object.player.health);
                 if(object.player.health <= 0 || populatedObject[index].health <= 0) { //if the fight is over - someone lost - need different things to happen for player win||cpu win
                     clearInterval(interval);
                     fighting = false;
@@ -491,16 +489,16 @@ class Game extends React.Component {
                 </div>
 
                 <div id="hudContainer">
+                    <div className="hud">'M' for Map</div>    
                     <div className="hud" id="level">Level: {object.player.level}</div>
                     <div className="hud" id="xp">XP: {object.player.xp}</div>
                     <div className="hud" id="health">Health: {object.player.health}</div>
                     <div className="hud" id="weapon">Weapon: {object.player.weapon.toUpperCase()}</div>
-                    <div className="hud" id="armor">Armor: {object.player.armor.toUpperCase()}</div>
-                    <div className="hud">'M' for Map</div>                
+                    <div className="hud" id="armor">Armor: {object.player.armor.toUpperCase()}</div>            
                 </div>
                 <div id="hudContainer2">
-                    <div className="hud" id="enemy">PAWN</div>
-                    <div className="hud" id="enemyHealth">Health: 100</div>
+                    <div className="hud2" id="enemyHealth">Health: 100</div>
+                    <div className="hud2" id="enemy">PAWN</div>
                 </div>
                 
                 <div id="instructionsBackdrop">
