@@ -301,6 +301,7 @@ class Game extends React.Component {
         } else if (classes.contains('pawn') || classes.contains('knight') || classes.contains('king')) { //when you run into an enemy  |||||||||||||||||||||||||SECOND PART||||||||||||||||||||||||
             updateEnemyHUD();
             document.getElementById('hudContainer2').style.transitionDelay = '0ms';
+            document.getElementById('hudContainer').style.transitionDelay = '0ms';
             document.getElementById('hudContainer2').style.opacity = 0.8;
             document.getElementById('hudContainer2').style.top = '0px';    
             document.getElementById('hudContainer').style.top = '40px';    

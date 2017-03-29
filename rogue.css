@@ -127,7 +127,7 @@ get distorted and mess up the map*/
     height: 40px; 
     position: fixed;
     top: -40px;
-    left: -160px;
+    left: -155px;
     align-items: flex-end;
     opacity: 0;
     transition: all 400ms linear 0ms; }
