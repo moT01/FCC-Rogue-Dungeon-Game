@@ -241,7 +241,7 @@ class Game extends React.Component {
             document.getElementById('armor').innerHTML = "Armor: " + object.player.armor.toUpperCase();
         };
         function updateEnemyHUD() {
-            document.getElementById('enemy').innerHTML = populatedObject[index].class.toUpperCase();
+            document.getElementById('enemy').innerHTML = '<b>'+populatedObject[index].class.toUpperCase()+'</b>';
             document.getElementById('enemyHealth').innerHTML = "Health: " + populatedObject[index].health;
         };
         function centerScreen() {
@@ -310,13 +310,13 @@ class Game extends React.Component {
             fighting = true; //used as a test in controllerPress() so you can't move when fighting
             interval = setInterval(function () {
                 if(myTurn) { /////////////players turn ------------ 
-                    var damage = Math.floor(object.player.offense * (object.player.offenseMultiplier + object.player.level/10) - populatedObject[index].defense);
+                    var damage = Math.floor(Math.random() * 5 + (object.player.offense * (object.player.offenseMultiplier + object.player.level/10) - populatedObject[index].defense));
                     if (damage<0) { damage = 1; }
                     populatedObject[index].health -= damage;
                     if(populatedObject[index].health < 0) { populatedObject[index].health = 0; }
                     myTurn = false;
                 } else { ///////////////computers turn --------------
-                    var damage = Math.floor(populatedObject[index].offense * (1+populatedObject[index].level/10) - (object.player.defense * object.player.defenseMultiplier));
+                    var damage = Math.floor(Math.random() * 5 + (populatedObject[index].offense * (1+populatedObject[index].level/10) - (object.player.defense * object.player.defenseMultiplier)));
                     if(damage < 0) { damage = 1; }
                     object.player.health -= damage;
                     if(object.player.health < 0) { object.player.health = 0; }
@@ -494,14 +494,15 @@ class Game extends React.Component {
                 </div>
 
                 <div id="hudContainer">
-                    <div className="hud">'M' for Map</div>    
+                    <div className="hud" id="player"><b>PLAYER</b></div>
+                    <div className="hud"><b>'M' for Map</b></div>
                     <div className="hud" id="level">Level: {object.player.level}</div>
                     <div className="hud" id="xp">XP: {object.player.xp}</div>
-                    <div className="hud" id="health">Health: {object.player.health}</div>
-                    <div className="hud" id="weapon">Weapon: {object.player.weapon.toUpperCase()}</div>
-                    <div className="hud" id="armor">Armor: {object.player.armor.toUpperCase()}</div>            
+                    <div className="hud" id="health">Health: {object.player.health}</div>         
                     <div className="hud" id="offese">Base Damage: {object.player.offense}</div>            
-                    <div className="hud" id="defense">Base Defense: {object.player.defense}</div>            
+                    <div className="hud" id="defense">Base Defense: {object.player.defense}</div>
+                    <div className="hud" id="weapon">Weapon: {object.player.weapon.toUpperCase()}</div>
+                    <div className="hud" id="armor">Armor: {object.player.armor.toUpperCase()}</div>   
                 </div>
                 <div id="hudContainer2">
                     <div className="hud2" id="enemyHealth">Health: 100</div>
@@ -517,7 +518,7 @@ class Game extends React.Component {
                             <li>Use the arrows or 'ASWD' controls to move</li>
                             <li>Run into an enemy to fight it or an item to collect it</li>
                             <li>Hover over items with the mouse to see details</li>
-                            <li>Collecting items will help you on your journey</li>
+                            <li>Higher levels/better items will increase your fighting abilities</li>
                             <li>Defeat the king to claim the dungeon</li>
                             <li>Good Luck!</li></h3>
                         </ul>
