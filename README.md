@@ -1,5 +1,5 @@
 ## FCC-Roguelike-Dungeon-Game
-##### Rogue Dungeon Game Project for [freecodecamp.com](https://www.freecodecamp.com/challenges/build-a-roguelike-dungeon-crawler-game)
+##### Roguelike Dungeon Game Project for [freecodecamp.com](https://www.freecodecamp.com/challenges/build-a-roguelike-dungeon-crawler-game)
 ##### Check it out [here](https://mot01.github.io/FCC-Rogue-Dungeon-Game/)
 
 <br/>
