@@ -9,7 +9,7 @@ var object = {
         level: 1,
         xp: 0,
         weapon: 'fist',
-        armor: 'body armor',
+        armor: 'body suit',
         health: 50,
         offense: 10,
         defense: 4,
@@ -124,7 +124,7 @@ class Game extends React.Component {
     hideToolTip = () => {
         document.getElementById('toolTip').style.opacity = 0;
         document.getElementById('toolTip').style.visibility = "hidden";
-    } //end hideToolTip()
+    }; //end hideToolTip()
     
     ///////////////////Populate Map with Objects - placeObjects() is called from createObjectsToPlace()/////////////////////////////////////////////////
     placeObjects = (objectsArray) => {
@@ -185,7 +185,7 @@ class Game extends React.Component {
                     case "king":
                         tempObj.health = Math.floor(Math.random() * 20 + 180);
                         tempObj.offense = Math.floor(Math.random() * 5 + 15);
-                        tempObj.defense = Math.floor(Math.random() * 5 + 15);
+                        tempObj.defense = Math.floor(Math.random() * 4 + 12);
                         tempObj.healthReward = Math.floor(Math.random() * 10 + 40);
                         tempObj.xpReward = Math.floor(Math.random() * 10 + 45);
                         break;
@@ -500,6 +500,8 @@ class Game extends React.Component {
                     <div className="hud" id="health">Health: {object.player.health}</div>
                     <div className="hud" id="weapon">Weapon: {object.player.weapon.toUpperCase()}</div>
                     <div className="hud" id="armor">Armor: {object.player.armor.toUpperCase()}</div>            
+                    <div className="hud" id="offese">Base Damage: {object.player.offense}</div>            
+                    <div className="hud" id="defense">Base Defense: {object.player.defense}</div>            
                 </div>
                 <div id="hudContainer2">
                     <div className="hud2" id="enemyHealth">Health: 100</div>
