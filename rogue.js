@@ -276,23 +276,23 @@ class Game extends React.Component {
                 object.player.health += tempObj.healthReward;    
             } if (classes.contains('hammer') || classes.contains('axe') || classes.contains('sword')) {
                 if (object.player.level < tempObj.levelNeeded) { /////////////////////////////////////////////////player doesn't have level required
-                    alert('level ' + tempObj.levelNeeded + ' required for the ' + tempObj.class);
+                    alert('Level ' + tempObj.levelNeeded + ' required for the ' + tempObj.class +'\nThis item will increase your damage');
                     changeSettings = false;
                 } else { //////////////////////////////////////////////////player has level required
                     if (object.player.offenseMultiplier < tempObj.offenseMultiplier) { //weapon is better, ...change multiplier
                     object.player.offenseMultiplier = tempObj.offenseMultiplier;
                     object.player.weapon = tempObj.class;
                     } //end if
-                    alert(tempObj.class + ' found!');
+                    alert(tempObj.class + ' found!\nThis item will increase your damage');
                 } //end if/else
             } if (classes.contains('shield')) {
                 if(object.player.level < tempObj.levelNeeded) {
-                    alert('level ' + tempObj.levelNeeded + ' required for the ' + tempObj.class);
+                    alert('Level ' + tempObj.levelNeeded + ' required for the ' + tempObj.class + '\nThis item will increase your defense');
                     changeSettings = false;
                 } else {
                     object.player.defenseMultiplier = tempObj.defenseMultiplier;
                     object.player.armor = 'shield';
-                    alert('shield found!');
+                    alert('shield found!\nThis item will increase your defense');
                 }
             } //end item
             if(changeSettings) { //this stops the player from moving on a wall or on an enemy/item it cant get yet
