@@ -506,7 +506,7 @@ class Game extends React.Component {
                         <div className="block"><h1><b>Welcome to my Dungeon Crawler</b></h1></div>
                         <ul className="block left"><h3>
                             <li>Enter your browsers 'Full Screen' mode for the best experience</li>
-                            <li>Press 'M' in game to see the menu</li>
+                            <li>Press 'M' in game to see the map</li>
                             <li>Use the arrows or 'ASWD' controls to move</li>
                             <li>Run into an enemy to fight it or an item to collect it</li>
                             <li>Hover over items with the mouse to see details</li>
