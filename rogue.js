@@ -153,9 +153,9 @@ class Game extends React.Component {
         var i=0, index = 0, objectsArray = [], tempObj = {};
         var numberOfObjects = [
             ['pawn', 10],
-            ['knight', 4],
+            ['knight', 5],
             ['king', 1],
-            ['health', 25],
+            ['health', 20],
             ['point', 20],
             ['hammer', 1],
             ['axe', 1],
@@ -178,12 +178,12 @@ class Game extends React.Component {
                     case "knight":
                         tempObj.health = Math.floor(Math.random() * 40 + 80);
                         tempObj.offense = Math.floor(Math.random() * 10 + 10);
-                        tempObj.defense = Math.floor(Math.random() * 6 + 7);
+                        tempObj.defense = Math.floor(Math.random() * 5 + 5);
                         tempObj.healthReward = Math.floor(Math.random() * 20 + 35);
                         tempObj.xpReward = Math.floor(Math.random() * 10 + 20);
                         break;
                     case "king":
-                        tempObj.health = Math.floor(Math.random() * 20 + 190);
+                        tempObj.health = Math.floor(Math.random() * 20 + 180);
                         tempObj.offense = Math.floor(Math.random() * 5 + 15);
                         tempObj.defense = Math.floor(Math.random() * 5 + 15);
                         tempObj.healthReward = Math.floor(Math.random() * 10 + 40);
@@ -198,11 +198,6 @@ class Game extends React.Component {
                     default:
                         break;
                 }
-                //health 25-75?
-                //offense 5-10
-                //defense 3-5
-                //xpreward 5-10
-                //health reward = 15-25
                 tempObj.index = index;
                 objectsArray.push(tempObj);
                 index++;
@@ -244,6 +239,10 @@ class Game extends React.Component {
             document.getElementById('health').innerHTML = "Health: " + object.player.health;
             document.getElementById('weapon').innerHTML = "Weapon: " + object.player.weapon.toUpperCase();
             document.getElementById('armor').innerHTML = "Armor: " + object.player.armor.toUpperCase();
+        };
+        function updateEnemyHUD() {
+            document.getElementById('enemy').innerHTML = populatedObject[index].class.toUpperCase();
+            document.getElementById('enemyHealth').innerHTML = "Health: " + populatedObject[index].health;
         };
         function centerScreen() {
             var temp = playerLocation.split('x'),
@@ -300,34 +299,46 @@ class Game extends React.Component {
                 endOfMove();
             } //end if
         } else if (classes.contains('pawn') || classes.contains('knight') || classes.contains('king')) { //when you run into an enemy  |||||||||||||||||||||||||SECOND PART||||||||||||||||||||||||
+            updateEnemyHUD();
+            document.getElementById('hudContainer2').style.transitionDelay = '0ms';
+            document.getElementById('hudContainer2').style.opacity = 0.8;
+            document.getElementById('hudContainer2').style.top = '0px';    
+            document.getElementById('hudContainer').style.top = '40px';    
             changeSettings = false;
             var myTurn = true, interval;
             fighting = true; //used as a test in controllerPress() so you can't move when fighting
             interval = setInterval(function () {
-                if(myTurn) { /////////////players turn ------------ new calculation needed
+                if(myTurn) { /////////////players turn ------------ 
                     populatedObject[index].health -= Math.floor(object.player.offense * (object.player.offenseMultiplier + object.player.level/10) - populatedObject[index].defense);//some times computers health goes up --not good                  
+                    if(populatedObject[index].health < 0) { populatedObject[index].health = 0; }
                     myTurn = false;
                 } else { ///////////////computers turn --------------
                     object.player.health -= Math.floor(populatedObject[index].offense * (1+populatedObject[index].level/10) - (object.player.defense * object.player.defenseMultiplier));
+                    if(object.player.health < 0) { object.player.health = 0; }
                     myTurn = true;
                 } ///////////end of hits
                 updateHUD();
+                updateEnemyHUD();
                     console.log('cpu health = ' +populatedObject[index].health);
                     console.log('player health = ' +object.player.health);
                 if(object.player.health <= 0 || populatedObject[index].health <= 0) { //if the fight is over - someone lost - need different things to happen for player win||cpu win
                     clearInterval(interval);
                     fighting = false;
                     if(object.player.health <= 0) { //computer won - player lost
-                        //dont do game over, ...just take em down a level or somethin
-                        alert('YOU LOSE');
+                        alert('You Lost!');
                     } else { ////////////////////////////////////////////////////////////////////player won - computer lost
                         object.player.health += populatedObject[index].healthReward;
                         object.player.xp += populatedObject[index].xpReward;
-                        endOfMove(); ///will probly add something here, ...this will probly only happen if the player won
+                        endOfMove();
                         if(classes.contains('king')) {
                             alert('You defeated the King, the dungeon is now yours!');
                         } //end if (king)
                     } //end player won
+                    document.getElementById('hudContainer2').style.transitionDelay = '1000ms';
+                    document.getElementById('hudContainer').style.transitionDelay = '1000ms';
+                    document.getElementById('hudContainer2').style.opacity = 0;
+                    document.getElementById('hudContainer2').style.top = '-40px';
+                    document.getElementById('hudContainer').style.top = '0px';
                 } // end if
             }, 1000); //end setInterval()
         } //end if (enemy)
@@ -478,13 +489,17 @@ class Game extends React.Component {
                     </table>
                 </div>
 
-                <div className="hudContainer">
+                <div id="hudContainer">
                     <div className="hud" id="level">Level: {object.player.level}</div>
                     <div className="hud" id="xp">XP: {object.player.xp}</div>
                     <div className="hud" id="health">Health: {object.player.health}</div>
                     <div className="hud" id="weapon">Weapon: {object.player.weapon.toUpperCase()}</div>
                     <div className="hud" id="armor">Armor: {object.player.armor.toUpperCase()}</div>
                     <div className="hud">'M' for Map</div>                
+                </div>
+                <div id="hudContainer2">
+                    <div className="hud" id="enemy">PAWN</div>
+                    <div className="hud" id="enemyHealth">Health: 100</div>
                 </div>
                 
                 <div id="instructionsBackdrop">
