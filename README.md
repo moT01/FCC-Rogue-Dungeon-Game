@@ -1,7 +1,7 @@
 ## FCC-Roguelike-Dungeon-Game
 ##### Roguelike Dungeon Game Project for [freecodecamp.com](https://www.freecodecamp.com/challenges/build-a-roguelike-dungeon-crawler-game)
 ##### Check it out [here](https://mot01.github.io/FCC-Rogue-Dungeon-Game/)
-//***special thanks to Ahmad Abdolsaheb - @ahmadabdolsaheb on gitter - for creating the map generating algorithm***//
+***special thanks to Ahmad Abdolsaheb - @ahmadabdolsaheb on gitter - for creating the map generating algorithm***
 
 <br/>
 <br/>
