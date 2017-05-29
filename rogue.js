@@ -1,3 +1,4 @@
+//***special thanks to Ahmad Abdolsaheb - @ahmadabdolsaheb on gitter - for creating the map generating algorithm***//
 //To change the rules of the map creation
 //==the hidth variable holds the width and height (dimensions) of the map - global variable
 //==the maxTurn variable contols how many corners (or turns) the map can have - located in nextMove()
