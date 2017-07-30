@@ -13,7 +13,7 @@ var object = {
         armor: 'body suit',
         health: 50,
         offense: 10,
-        defense: 4,
+        defense: 5,
         offenseMultiplier: 1,
         defenseMultiplier: 1
     }, 
@@ -37,16 +37,16 @@ var object = {
         offense: 14,
         defense: 6,
         xpReward: 10,
-        healthReward: 40
+        healthReward: 50
     }, 
     king: {
         class: 'king',
         level: 3,
         levelNeeded: 3,
         icon: 'king.png',
-        health: 150,
+        health: 125,
         offense: 20,
-        defense: 15,
+        defense: 12,
         xpReward: 50,
         healthReward: 100
     },
@@ -58,7 +58,7 @@ var object = {
     point: {
         class: 'point',
         icon: 'point.png',
-        xpReward: 1
+        xpReward: 2
     },
     hammer: {
         class: 'hammer',
