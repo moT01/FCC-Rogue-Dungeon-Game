@@ -23,7 +23,7 @@ var object = {
         levelNeeded: 1,
         icon: 'pawn.png',
         health: 50,
-        offense: 9,
+        offense: 0,
         defense: 3,
         xpReward: 5,
         healthReward: 20
@@ -170,11 +170,11 @@ class Game extends React.Component {
                 tempObj = JSON.parse(JSON.stringify(object[numberOfObjects[i][0]]));
                 switch(numberOfObjects[i][0]) {
                     case "pawn":
-                        tempObj.health = Math.floor(Math.random() * 20 + 40);
-                        tempObj.offense = Math.floor(Math.random() * 4 + 10);
-                        tempObj.defense = Math.floor(Math.random() * 4 + 2);
-                        tempObj.healthReward = Math.floor(Math.random() * 10 + 15);
-                        tempObj.xpReward = Math.floor(Math.random() * 5 + 5);
+                        tempObj.health = Math.floor(Math.random() * 20 + object.pawn.health);
+                        tempObj.offense = Math.floor(Math.random() * 4 + object.pawn.offense);
+                        tempObj.defense = Math.floor(Math.random() * 4 + object.pawn.defense);
+                        tempObj.healthReward = Math.floor(Math.random() * 10 + object.pawn.healthReward);
+                        tempObj.xpReward = Math.floor(Math.random() * 5 + object.pawn.xpReward);
                         break;
                     case "knight":
                         tempObj.health = Math.floor(Math.random() * 40 + 80);
