@@ -23,7 +23,7 @@ var object = {
         levelNeeded: 1,
         icon: 'pawn.png',
         health: 50,
-        offense: 0,
+        offense: 9,
         defense: 3,
         xpReward: 5,
         healthReward: 20
