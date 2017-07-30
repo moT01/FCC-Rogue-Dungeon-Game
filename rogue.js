@@ -25,7 +25,7 @@ var object = {
         health: 50,
         offense: 9,
         defense: 3,
-        xpReward: 5,
+        xpReward: 6,
         healthReward: 20
     }, 
     knight: {
@@ -33,10 +33,10 @@ var object = {
         level: 2,
         levelNeeded: 2,
         icon: 'knight.png',
-        health:100,
+        health: 100,
         offense: 14,
         defense: 6,
-        xpReward: 10,
+        xpReward: 12,
         healthReward: 50
     }, 
     king: {
@@ -45,7 +45,7 @@ var object = {
         levelNeeded: 3,
         icon: 'king.png',
         health: 125,
-        offense: 20,
+        offense: 18,
         defense: 12,
         xpReward: 50,
         healthReward: 100
