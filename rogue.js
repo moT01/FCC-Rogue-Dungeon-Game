@@ -44,9 +44,9 @@ var object = {
         level: 3,
         levelNeeded: 3,
         icon: 'king.png',
-        health: 200,
-        offense: 25,
-        defense: 16,
+        health: 150,
+        offense: 20,
+        defense: 15,
         xpReward: 50,
         healthReward: 100
     },
