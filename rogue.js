@@ -177,24 +177,24 @@ class Game extends React.Component {
                         tempObj.xpReward = Math.floor(Math.random() * 5 + object.pawn.xpReward);
                         break;
                     case "knight":
-                        tempObj.health = Math.floor(Math.random() * 40 + 80);
-                        tempObj.offense = Math.floor(Math.random() * 10 + 10);
-                        tempObj.defense = Math.floor(Math.random() * 5 + 5);
-                        tempObj.healthReward = Math.floor(Math.random() * 20 + 35);
-                        tempObj.xpReward = Math.floor(Math.random() * 10 + 20);
+                        tempObj.health = Math.floor(Math.random() * 40 + object.knight.health);
+                        tempObj.offense = Math.floor(Math.random() * 10 + object.knight.offense);
+                        tempObj.defense = Math.floor(Math.random() * 5 + object.knight.defense);
+                        tempObj.healthReward = Math.floor(Math.random() * 20 + object.knight.healthReward);
+                        tempObj.xpReward = Math.floor(Math.random() * 10 + object.knight.xpReward);
                         break;
                     case "king":
                         tempObj.health = Math.floor(Math.random() * 20 + object.king.health);
-                        tempObj.offense = Math.floor(Math.random() * 5 + 15);
-                        tempObj.defense = Math.floor(Math.random() * 4 + 12);
-                        tempObj.healthReward = Math.floor(Math.random() * 10 + 40);
-                        tempObj.xpReward = Math.floor(Math.random() * 10 + 45);
+                        tempObj.offense = Math.floor(Math.random() * 5 + object.king.offense);
+                        tempObj.defense = Math.floor(Math.random() * 4 + object.king.defense);
+                        tempObj.healthReward = Math.floor(Math.random() * 10 + object.king.healthReward);
+                        tempObj.xpReward = Math.floor(Math.random() * 10 + object.king.xpReward);
                         break;
                     case "health":
-                        tempObj.healthReward = Math.floor(Math.random() * 5 + 5);
+                        tempObj.healthReward = Math.floor(Math.random() * 5 + object.health.healthReward);
                         break;
                     case "point":
-                        tempObj.xpReward = Math.floor(Math.random() * 2 + 1);
+                        tempObj.xpReward = Math.floor(Math.random() * 2 + object.point.xpReward);
                         break;
                     default:
                         break;
