@@ -23,8 +23,8 @@ var object = {
         levelNeeded: 1,
         icon: 'pawn.png',
         health: 50,
-        offense: 10,
-        defense: 4,
+        offense: 9,
+        defense: 3,
         xpReward: 5,
         healthReward: 20
     }, 
@@ -34,8 +34,8 @@ var object = {
         levelNeeded: 2,
         icon: 'knight.png',
         health:100,
-        offense: 15,
-        defense: 10,
+        offense: 14,
+        defense: 6,
         xpReward: 10,
         healthReward: 40
     }, 
@@ -87,7 +87,7 @@ var object = {
 };
 
 // hidth = width and height
-var hidth = 80, playerLocation, populatedObject = [], fighting = false;
+var hidth = 60, playerLocation, populatedObject = [], fighting = false;
 class Game extends React.Component {
     constructor(props) {
         super(props);
@@ -153,8 +153,8 @@ class Game extends React.Component {
     createObjectsToPlace = () => {
         var i=0, index = 0, objectsArray = [], tempObj = {};
         var numberOfObjects = [
-            ['pawn', 10],
-            ['knight', 5],
+            ['pawn', 12],
+            ['knight', 6],
             ['king', 1],
             ['health', 15],
             ['point', 15],
@@ -432,7 +432,7 @@ class Game extends React.Component {
 
     nextMove = () => {
         var maxTurn = 800;
-        var maxLength = 10;
+        var maxLength = 8;
         var oldArr = this.fullArray();
         var curRow = Math.floor(Math.random() * hidth);
         var curCol = Math.floor(Math.random() * hidth);
