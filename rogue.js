@@ -87,7 +87,7 @@ var object = {
 };
 
 // hidth = width and height
-var hidth = 60, playerLocation, populatedObject = [], fighting = false;
+var hidth = 70, playerLocation, populatedObject = [], fighting = false;
 class Game extends React.Component {
     constructor(props) {
         super(props);
