@@ -33,7 +33,7 @@ var object = {
         level: 2,
         levelNeeded: 2,
         icon: 'knight.png',
-        health: 100,
+        health: 75,
         offense: 14,
         defense: 8,
         xpReward: 12,
