@@ -26,7 +26,7 @@ var object = {
         offense: 10,
         defense: 6,
         xpReward: 6,
-        healthReward: 20
+        healthReward: 25
     }, 
     knight: {
         class: 'knight',
@@ -156,7 +156,7 @@ class Game extends React.Component {
             ['pawn', 12],
             ['knight', 6],
             ['king', 1],
-            ['health', 15],
+            ['health', 10],
             ['point', 15],
             ['hammer', 1],
             ['axe', 1],
