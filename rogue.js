@@ -23,8 +23,8 @@ var object = {
         levelNeeded: 1,
         icon: 'pawn.png',
         health: 50,
-        offense: 9,
-        defense: 3,
+        offense: 10,
+        defense: 6,
         xpReward: 6,
         healthReward: 20
     }, 
@@ -35,7 +35,7 @@ var object = {
         icon: 'knight.png',
         health: 100,
         offense: 14,
-        defense: 6,
+        defense: 8,
         xpReward: 12,
         healthReward: 50
     }, 
@@ -45,7 +45,7 @@ var object = {
         levelNeeded: 3,
         icon: 'king.png',
         health: 125,
-        offense: 18,
+        offense: 20,
         defense: 12,
         xpReward: 50,
         healthReward: 100
