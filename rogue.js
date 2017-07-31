@@ -34,10 +34,10 @@ var object = {
         levelNeeded: 2,
         icon: 'knight.png',
         health: 75,
-        offense: 14,
+        offense: 12,
         defense: 8,
         xpReward: 12,
-        healthReward: 50
+        healthReward: 60
     }, 
     king: {
         class: 'king',
