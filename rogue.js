@@ -46,7 +46,7 @@ var object = {
         icon: 'king.png',
         health: 125,
         offense: 20,
-        defense: 12,
+        defense: 15,
         xpReward: 50,
         healthReward: 100
     },
