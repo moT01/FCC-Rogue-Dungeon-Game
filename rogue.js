@@ -431,8 +431,8 @@ class Game extends React.Component {
     }; //end fullArray
 
     nextMove = () => {
-        var maxTurn = 800;
-        var maxLength = 14;
+        var maxTurn = 1500;
+        var maxLength = 3;
         var oldArr = this.fullArray();
         var curRow = Math.floor(Math.random() * hidth);
         var curCol = Math.floor(Math.random() * hidth);
